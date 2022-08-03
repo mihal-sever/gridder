@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Sever.Gridder.Data;
+using UnityEngine;
 
 namespace Sever.Gridder
 {
@@ -28,11 +29,11 @@ namespace Sever.Gridder
         public static async Task<bool> CreateProject()
         {
             var path = FileManager.ChooseImageFromDisk();
-            if (path == null)
+            if (string.IsNullOrEmpty(path))
             {
                 return false;
             }
-            
+
             var sprite = await DataLoader.LoadSpriteFromDisk(path);
             var project = new Project(path, sprite);
             DataLoader.CreateProject(project, path);

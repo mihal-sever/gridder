@@ -1,6 +1,4 @@
-using System;
 using System.Linq;
-using Sever.Gridder.UI;
 using UnityEngine;
 
 namespace Sever.Gridder
@@ -20,17 +18,6 @@ namespace Sever.Gridder
             {
                 initializable.Init();
             }
-        }
-
-        private void OnApplicationFocus(bool hasFocus)
-        {
-            if (hasFocus)
-            {
-                BlurController.Instance.Deactivate();
-                return;
-            }
-            
-            BlurController.Instance.Activate();
         }
     }
 }

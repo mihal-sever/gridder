@@ -12,7 +12,7 @@ namespace Sever.Gridder.UI
         [SerializeField] private GameObject _projectButtonPrefab;
         [SerializeField] private GameObject _createProjectButtonPrefab;
 
-        private readonly HashSet<ProjectButton> _projectButtons;
+        private readonly HashSet<ProjectButton> _projectButtons = new();
 
 
         public void Init()
@@ -37,9 +37,9 @@ namespace Sever.Gridder.UI
 
         private async Task CreateProject()
         {
-            // BlurController.Instance.Activate();
+            await BlurController.Instance.Enable();
             bool isProjectCreated = await ProjectManager.CreateProject();
-            // BlurController.Instance.Deactivate();
+            BlurController.Instance.Deactivate();
             if (!isProjectCreated)
             {
                 return;
@@ -61,10 +61,12 @@ namespace Sever.Gridder.UI
 
             void DeleteProject()
             {
-                // TODO pop up
-                ProjectManager.DeleteProject(project);
-                _projectButtons.Remove(projectButton);
-                _paginationController.DeleteItem(projectButton.RectTransform);
+                PopUp.Instance.ShowPopUp(() =>
+                {
+                    ProjectManager.DeleteProject(project);
+                    _projectButtons.Remove(projectButton);
+                    _paginationController.DeleteItem(projectButton.RectTransform);
+                });
             }
         }
     }

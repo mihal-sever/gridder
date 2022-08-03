@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using Krivodeling.UI.Effects;
 using UnityEngine;
 
@@ -19,6 +21,17 @@ namespace Sever.Gridder.UI
         public void Init()
         {
             _blur = GetComponent<UIBlur>();
+        }
+
+        public async Task Enable()
+        {
+            _blur.Intensity = 1;
+            await Task.Delay(TimeSpan.FromSeconds(Time.deltaTime));
+        }
+
+        public void Disable()
+        {
+            _blur.Intensity = 0;
         }
 
         public void Activate()

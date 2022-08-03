@@ -12,7 +12,7 @@ namespace Sever.Gridder
             };
 
             var filePaths = StandaloneFileBrowser.OpenFilePanel("Open File", "", extensions, false);
-            if (filePaths.Length == 0)
+            if (filePaths == null || filePaths.Length == 0)
             {
                 return null;
             }

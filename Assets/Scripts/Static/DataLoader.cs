@@ -66,7 +66,7 @@ namespace Sever.Gridder
             {
                 return;
             }
-            Directory.Delete(projectDirectory);
+            Directory.Delete(projectDirectory, true);
         }
         
         public static async Task<Project> LoadProject(string projectGuid)
