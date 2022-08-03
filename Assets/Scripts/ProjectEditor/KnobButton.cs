@@ -1,9 +1,10 @@
 using System;
+using Sever.Gridder.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GridMapper.UI
+namespace Sever.Gridder.Editor
 {
     [RequireComponent(typeof(Button))]
     public class KnobButton : MonoBehaviour
@@ -15,117 +16,69 @@ namespace GridMapper.UI
         [SerializeField] private Color _selectedColor = Color.green;
         [SerializeField] private Color _finishedColor = Color.red;
 
-        private Project _project;
-        private readonly Vector3 _panelRightPosition = new Vector3(90, 8, 0);
-        private readonly Vector3 _panelLeftPosition = new Vector3(-106, 8, 0);
+        private readonly Vector3 _panelRightPosition = new(90, 8, 0);
+        private readonly Vector3 _panelLeftPosition = new(-106, 8, 0);
         private float _maxPanelPositionX;
-        private Vector2 _coordToClosestNode;
-
-        private Action<KnobButton> OnSelected;
-        private Action<KnobButton> OnDeleted;
-
+        
+        private Project _project;
         private Button _button;
-        private Button Button => _button ??= GetComponent<Button>();
-
         private RectTransform _rectTransform;
-        private RectTransform Rect => _rectTransform ??= GetComponent<RectTransform>();
 
-        public Vector2 AnchoredPosition
-        {
-            get => Rect.anchoredPosition;
-            private set => Rect.anchoredPosition = value;
-        }
-
+        private Action<KnobButton> _onSelected;
 
         private bool _isFinished;
-
-        public bool IsFinished
-        {
-            get => _isFinished;
-            private set
-            {
-                if (_isFinished == value)
-                {
-                    return;
-                }
-
-                _isFinished = value;
-                Button.image.color = IsFinished ? _finishedColor : _selectedColor;
-            }
-        }
-
-
         private bool _isSelected;
 
-        public bool IsSelected
+        
+        private void Init()
         {
-            get => _isSelected;
-            set
-            {
-                if (_isSelected == value)
-                {
-                    return;
-                }
-
-                _isSelected = value;
-
-                if (_isSelected)
-                {
-                    OnSelected?.Invoke(this);
-                }
-
-                ShowCoordinatesPanel();
-                Button.image.color = IsFinished ? _finishedColor :
-                    _isSelected ? _selectedColor : _defaultColor;
-            }
-        }
-
-
-        private void Awake()
-        {
+            _button ??= GetComponent<Button>();
+            _rectTransform ??= GetComponent<RectTransform>();
+            
+            _button.onClick.AddListener(OnClick);
             ShowCoordinatesPanel();
-            Button.onClick.AddListener(OnClick);
         }
 
-        private void Update()
+        public void Init(Project project, float maxPositionX, Action<KnobButton> onSelected)
         {
-            if (!IsSelected)
-            {
-                return;
-            }
-
-            if (Input.GetKeyUp(KeyCode.Backspace))
-            {
-                OnDeleted?.Invoke(this);
-                return;
-            }
-
-            if (Input.GetKeyUp(KeyCode.F))
-            {
-                IsFinished = !IsFinished;
-            }
-        }
-
-
-        public void Init(Project project, float maxPositionX, Action<KnobButton> onSelectedCallback, Action<KnobButton> onDeletedCallback)
-        {
+            Init();
             _project = project;
             _maxPanelPositionX = maxPositionX;
-            OnSelected = onSelectedCallback;
-            OnDeleted = onDeletedCallback;
+            _onSelected = onSelected;
         }
 
-        public void Init(Project project, bool isFinished, Vector2 anchoredPosition, float maxPositionX, Action<KnobButton> onSelectedCallback,
-            Action<KnobButton> onDeletedCallback)
+        public void Init(Project project, bool isFinished, Vector2 anchoredPosition, float maxPositionX, Action<KnobButton> onSelected)
         {
-            IsFinished = isFinished;
-            AnchoredPosition = anchoredPosition;
-            Init(project, maxPositionX, onSelectedCallback, onDeletedCallback);
+            Init();
+            _isFinished = isFinished;
+            _rectTransform.anchoredPosition = anchoredPosition;
+            Init(project, maxPositionX, onSelected);
+        }
+
+        public void SetSelected(bool isSelected)
+        {
+            if (_isSelected == isSelected)
+            {
+                return;
+            }
+
+            _isSelected = isSelected;
+            _onSelected?.Invoke(this);
+                
+            ShowCoordinatesPanel();
+            _button.image.color = _isFinished ? _finishedColor :
+                _isSelected ? _selectedColor : _defaultColor;
+        }
+
+        public void ToggleFinished()
+        {
+            _isFinished = !_isFinished;
+            _button.image.color = _isFinished ? _finishedColor : _selectedColor;
         }
 
         private void OnClick()
         {
-            IsSelected = !IsSelected;
+            SetSelected(!_isSelected);
         }
 
         private void ShowCoordinatesPanel()
@@ -137,13 +90,11 @@ namespace GridMapper.UI
                 return;
             }
 
-            var coordPixel = new Vector2(Mathf.Abs(Rect.anchoredPosition.x), Mathf.Abs(Rect.anchoredPosition.y));
-            var pixelsPerMm = _project.ImageWidth / _project.CanvasWidth;
-            var coordMm = coordPixel / pixelsPerMm;
-            _coordToClosestNode = new((int) coordMm.x % _project.GridStep, (int) coordMm.y % _project.GridStep);
-
+            var coordPixel = new Vector2(Mathf.Abs(_rectTransform.anchoredPosition.x), Mathf.Abs(_rectTransform.anchoredPosition.y));
+            var coordMm = coordPixel / _project.PixelsPerMm;
+            Vector2Int coordToClosestNode = new((int) coordMm.x % _project.GridStep, (int) coordMm.y % _project.GridStep);
             _panel.anchoredPosition = coordPixel.x < _maxPanelPositionX ? _panelRightPosition : _panelLeftPosition;
-            _coordinates.text = $"x: {_coordToClosestNode.x}, y: {_coordToClosestNode.y}";
+            _coordinates.text = $"x: {coordToClosestNode.x}, y: {coordToClosestNode.y}";
         }
     }
 }

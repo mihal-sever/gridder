@@ -1,10 +1,13 @@
 using System;
 using UnityEngine;
 
-[Serializable]
-public class KnobDto
+namespace Sever.Gridder.Data
 {
-    public bool isFinished;
-    public float x;
-    public float y;
+    [Serializable]
+    public class KnobDto
+    {
+        public bool isFinished;
+        public float x;
+        public float y;
+    }
 }

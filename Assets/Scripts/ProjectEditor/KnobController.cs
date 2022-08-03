@@ -1,10 +1,9 @@
 using System.Collections.Generic;
-using GridMapper.Data;
-using GridMapper.UI;
+using Sever.Gridder.Data;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace GridMapper
+namespace Sever.Gridder.Editor
 {
     public class KnobController : MonoBehaviour, IInitializable, IPointerClickHandler
     {
@@ -22,7 +21,6 @@ namespace GridMapper
         {
             _maxKnobPanelPositionX = _imagePanel.GetComponent<RectTransform>().rect.size.x - 200;
             
-            EventBus.ProjectSelected += OpenProject;
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -34,36 +32,66 @@ namespace GridMapper
                     return;
                 }
                 
-                _lastSelectedButton.IsSelected = false;
+                _lastSelectedButton.SetSelected(false);
                 _lastSelectedButton = null;
 
                 return;
             }
 
             var knob = Instantiate(_knobPrefab, eventData.position, Quaternion.identity, _knobsParent).GetComponent<KnobButton>();
-            knob.Init(_project, _maxKnobPanelPositionX, SelectKnob, DeleteKnob);
+            knob.Init(_project, _maxKnobPanelPositionX, SelectKnob);
             _knobs.Add(knob);
         }
 
-        private void OpenProject(Project project)
+        private void Update()
+        {
+            if (!_lastSelectedButton)
+            {
+                return;
+            }
+
+            if (Input.GetKeyUp(KeyCode.Backspace))
+            {
+                DeleteKnob(_lastSelectedButton);
+                return;
+            }
+
+            if (Input.GetKeyUp(KeyCode.F))
+            {
+                _lastSelectedButton.ToggleFinished();
+            }
+        }
+        
+        public void Clear()
+        {
+            _project = null;
+            _lastSelectedButton = null;
+            foreach (KnobButton knob in _knobs)
+            {
+                Destroy(knob.gameObject);
+            }
+            _knobs.Clear();
+        }
+
+        public void SetProject(Project project)
         {
             if (_project != project)
             {
-                // clear previous project
+                Clear();
             }
             
             _project = project;
             
-            if (project.Knobs is not {Count: > 0})
+            if (_project.Knobs is not {Count: > 0})
             {
                 return;
             }
             
-            foreach (KnobDto knobDto in project.Knobs)
+            foreach (KnobDto knobDto in _project.Knobs)
             {
                 var knob = Instantiate(_knobPrefab, _knobsParent).GetComponent<KnobButton>();
                 var anchoredPosition = new Vector2(knobDto.x, knobDto.y);
-                knob.Init(_project, knobDto.isFinished, anchoredPosition, _maxKnobPanelPositionX, SelectKnob, DeleteKnob);
+                knob.Init(_project, knobDto.isFinished, anchoredPosition, _maxKnobPanelPositionX, SelectKnob);
                 _knobs.Add(knob);
             }
         }
@@ -72,7 +100,7 @@ namespace GridMapper
         {
             if (_lastSelectedButton && _lastSelectedButton != knob)
             {
-                _lastSelectedButton.IsSelected = false;
+                _lastSelectedButton.SetSelected(false);
             }
 
             _lastSelectedButton = knob;

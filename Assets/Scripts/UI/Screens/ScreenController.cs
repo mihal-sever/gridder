@@ -2,27 +2,19 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Sever.UI
+namespace Sever.Gridder.UI
 {
-    public class ScreenController : MonoBehaviour
+    public class ScreenController : MonoBehaviour, IInitializable
     {
         [SerializeField] private float _screenAnimationDuration = .5f;
         
-        private static ScreenController _instance;
-        public static ScreenController Instance => _instance ??= FindObjectOfType<ScreenController>(true);
-        
         private static List<BaseScreen> _screens;
         private static BaseScreen _currentScreen;
+        
 
-
-        private void Awake()
+        public void Init()
         {
-            Init();
-        }
-
-        private void Init()
-        {
-            _screens = GetComponentsInChildren<BaseScreen>(true).ToList();
+            _screens = FindObjectsOfType<BaseScreen>(true).ToList();
 
             foreach (var screen in _screens)
             {
@@ -30,7 +22,7 @@ namespace Sever.UI
                 screen.gameObject.SetActive(false);
             }
 
-            OpenScreen<OpenFileScreen>();
+            OpenScreen<ProjectSelectionScreen>();
         }
 
         public static void OpenScreen<T>() where T : BaseScreen

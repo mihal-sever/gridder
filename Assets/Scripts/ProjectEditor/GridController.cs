@@ -1,65 +1,90 @@
 using System.Collections;
+using System.Collections.Generic;
+using Sever.Gridder.Data;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GridMapper
+namespace Sever.Gridder.Editor
 {
-    public class GridController : MonoBehaviour, IInitializable
+    public class GridController : MonoBehaviour
     {
         [SerializeField] private Image _image;
         [SerializeField] private Transform _grid;
-        [SerializeField] private GameObject _gridPrefab;
-
-        private const int CellsInGridPart = 5;
-        private const float GridSizePixel = 250;
-
-        private Sprite _sprite;
-        private Project _project;
+        [SerializeField] private GameObject _verticalLinePrefab;
+        [SerializeField] private GameObject _horizontalLinePrefab;
         
+        private Project _project;
+        private readonly List<GameObject> _verticalLines = new();
+        private readonly List<GameObject> _horizontalLines = new();
 
-        public void Init()
+        
+        public void Clear()
         {
-            EventBus.ProjectSelected += project => StartCoroutine(OpenProject(project));
-        }
+            _image.sprite = null;
 
-        private IEnumerator OpenProject(Project project)
-        {
-            if (_project != project)
+            foreach (GameObject gridPart in _verticalLines)
             {
-                // clear previous project
+                Destroy(gridPart);
+            }
+            
+            foreach (GameObject gridPart in _horizontalLines)
+            {
+                Destroy(gridPart);
             }
 
+            _verticalLines.Clear();
+            _horizontalLines.Clear();
+        }
+
+        public void SetProject(Project project)
+        {
+            if (_project == project)
+            {
+                return;
+            }
+
+            Clear();
             _project = project;
+            StartCoroutine(Setup());
+        }
+
+        private IEnumerator Setup()
+        {
             _image.sprite = _project.Image;
-            
+
             yield return null;
-            
+
             float imageScaleFactor = GetComponent<RectTransform>().rect.size.x / _image.sprite.texture.width;
             _image.rectTransform.sizeDelta = new Vector2(0, _image.sprite.texture.height * imageScaleFactor);
 
             _project.UpdateImageSize(_image.rectTransform.rect.size);
+            CreateGrid();
+        }
+
+        public void UpdateGrid()
+        {
+            Clear();
+            CreateGrid();
         }
 
         private void CreateGrid()
         {
-            var _canvasWidth = _project.CanvasWidth;
-
-            var gridSizeMm = _project.GridStep * CellsInGridPart;
-            var gridSizePixel = GridSizePixel;
-
-            int horizontalGrids = Mathf.CeilToInt(_canvasWidth / gridSizeMm);
-            int verticalGrids = Mathf.CeilToInt(_project.CanvasHeight / gridSizeMm);
-
-            var gridScaleFactor = _project.ImageWidth / (_canvasWidth / gridSizeMm * gridSizePixel);
-            _grid.localScale = Vector3.one * gridScaleFactor;
-
-            for (int i = 0; i < horizontalGrids; i++)
+            var gridStepPixel = _project.GridStep * _project.PixelsPerMm;
+            int horizontalCellsCount = Mathf.CeilToInt(_project.ImageWidth / gridStepPixel);
+            int verticalCellsCount = Mathf.CeilToInt(_project.ImageHeight / gridStepPixel);
+            
+            for (int i = 1; i < horizontalCellsCount; i++)
             {
-                for (int j = 0; j < verticalGrids; j++)
-                {
-                    var newGrid = Instantiate(_gridPrefab, _grid).GetComponent<RectTransform>();
-                    newGrid.anchoredPosition = new Vector2(gridSizePixel * i, -gridSizePixel * j);
-                }
+                var line = Instantiate(_verticalLinePrefab, _grid).GetComponent<RectTransform>();
+                line.anchoredPosition = new Vector2(gridStepPixel * i, 0);
+                _verticalLines.Add(line.gameObject);
+            }
+
+            for (int i = 1; i < verticalCellsCount; i++)
+            {
+                var line = Instantiate(_horizontalLinePrefab, _grid).GetComponent<RectTransform>();
+                line.anchoredPosition = new Vector2(0, gridStepPixel * i);
+                _horizontalLines.Add(line.gameObject);
             }
         }
     }

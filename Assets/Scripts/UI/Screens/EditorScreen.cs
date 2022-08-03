@@ -1,124 +1,63 @@
-using System.Globalization;
-using TMPro;
+using Sever.Gridder.Data;
+using Sever.Gridder.Editor;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GridMapper.UI
+namespace Sever.Gridder.UI
 {
-    public class MainScreen : BaseScreen, IInitializable
+    public class EditorScreen : BaseScreen, IInitializable
     {
-        [SerializeField] private TMP_InputField _canvasWidthInput;
-        [SerializeField] private TMP_InputField _canvasHeightInput;
-        [SerializeField] private TMP_InputField _gridStepInput;
-        [SerializeField] private Button _apply;
+        [SerializeField] private GridController _gridController;
+        [SerializeField] private KnobController _knobController;
 
-        private float? _canvasWidth;
-        private float? _canvasHeight;
-        private int? _gridStep;
+        [SerializeField] private Button _settingsButton;
+        [SerializeField] private Button _saveButton;
+
+        [Space, SerializeField] private ProjectSettingsPanel _settingsPanel;
+
+        private Project _project;
 
 
         public void Init()
         {
-            gameObject.SetActive(false);
+            _settingsPanel.Close();
+            
+            _settingsButton.onClick.AddListener(_settingsPanel.Open);
+            _saveButton.onClick.AddListener(() => ProjectManager.SaveProject(_project));
 
-            _canvasWidthInput.characterValidation = TMP_InputField.CharacterValidation.Decimal;
-            _canvasHeightInput.characterValidation = TMP_InputField.CharacterValidation.Decimal;
-            _gridStepInput.characterValidation = TMP_InputField.CharacterValidation.Integer;
-
-            _canvasWidthInput.onEndEdit.AddListener(OnEndEditCanvasWidth);
-            _gridStepInput.onEndEdit.AddListener(OnEndEditGridStep);
-
-            _apply.onClick.AddListener(Apply);
-
-
-            EventBus.ImageChosen += _ => { gameObject.SetActive(true); };
-
-            EventBus.ProjectLoaded += data =>
-            {
-                if (data.gridStepMm > 0)
-                {
-                    _gridStep = data.gridStepMm;
-                }
-
-                if (data.canvasWidth > 0)
-                {
-                    _canvasWidth = data.canvasWidth;
-                }
-            };
-
-            EventBus.ImageSetup += () =>
-            {
-                if (_gridStep is { })
-                {
-                    SetGridStep(_gridStep.Value);
-                }
-
-                if (_canvasWidth is { })
-                {
-                    SetCanvasSize(_canvasWidth.Value);
-                }
-
-                Apply();
-            };
+            EventBus.ProjectSelected += OpenProject;
+            EventBus.ProjectDeleted += DeleteProject;
         }
 
-        private void OnEndEditCanvasWidth(string line)
+        private void OnApplicationQuit()
         {
-            float result;
-            if (!float.TryParse(line, out result))
-            {
-                _canvasWidth = null;
-                _canvasHeight = null;
-                _canvasWidthInput.text = null;
-                _canvasHeightInput.text = null;
-                return;
-            }
-
-            SetCanvasSize(result);
+            ProjectManager.SaveProject(_project);
         }
 
-        private void SetCanvasSize(float canvasWidth)
+        private void OpenProject(Project project)
         {
-            _canvasWidth = Mathf.Clamp(canvasWidth, 50, 5000);
-
-            Project.PixelsPerMm = Project.ImageWidth / _canvasWidth.Value;
-            _canvasHeight = Project.ImageHeight / Project.PixelsPerMm;
-
-            _canvasWidthInput.text = _canvasWidth.Value.ToString(CultureInfo.InvariantCulture);
-            _canvasHeightInput.text = Mathf.RoundToInt(_canvasHeight.Value).ToString(CultureInfo.InvariantCulture);
-        }
-
-        private void OnEndEditGridStep(string line)
-        {
-            int result;
-            if (!int.TryParse(line, out result))
-            {
-                _gridStep = null;
-                _gridStepInput.text = null;
-                return;
-            }
-
-            SetGridStep(result);
-        }
-
-        private void SetGridStep(int step)
-        {
-            _gridStep = Mathf.Clamp(step, 10, 100);
-            _gridStepInput.text = _gridStep.Value.ToString(CultureInfo.InvariantCulture);
-        }
-
-        private void Apply()
-        {
-            if (!_canvasWidth.HasValue || !_canvasHeight.HasValue || !_gridStep.HasValue)
+            if (_project == project)
             {
                 return;
             }
+            
+            DeleteProject();
+            _project = project;
+            _gridController.SetProject(_project);
+            _knobController.SetProject(_project);
+            _settingsPanel.SetProject(_project, ApplySettings);
+        }
 
-            Project.CanvasWidth = _canvasWidth.Value;
-            Project.CanvasHeight = _canvasHeight.Value;
-            Project.GridStepMm = _gridStep.Value;
+        private void ApplySettings()
+        {
+            _gridController.UpdateGrid();
+        }
 
-            EventBus.OnUserInputValidated();
+        private void DeleteProject()
+        {
+            _gridController.Clear();
+            _knobController.Clear();
+            _project = null;
         }
     }
 }

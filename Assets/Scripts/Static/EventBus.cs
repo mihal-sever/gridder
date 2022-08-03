@@ -1,7 +1,7 @@
 using System;
-using GridMapper.Data;
+using Sever.Gridder.Data;
 
-namespace GridMapper
+namespace Sever.Gridder
 {
     public static class EventBus
     {

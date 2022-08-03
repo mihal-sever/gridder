@@ -1,11 +1,16 @@
 using System;
 using System.Collections.Generic;
 
-[Serializable]
-public class ProjectDto
+namespace Sever.Gridder.Data
 {
-    public string imagePath;
-    public int gridStepMm;
-    public float canvasWidth;
-    public List<KnobDto> knobs;
+    [Serializable]
+    public class ProjectDto
+    {
+        public string guid;
+        public string name;
+        public string imageExtension;
+        public int gridStep;
+        public float canvasWidth;
+        public List<KnobDto> knobs;
+    }
 }

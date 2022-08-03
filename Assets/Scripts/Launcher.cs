@@ -1,5 +1,36 @@
+using System;
+using System.Linq;
+using Sever.Gridder.UI;
 using UnityEngine;
 
-public class Launcher : MonoBehaviour
+namespace Sever.Gridder
 {
+    public class Launcher : MonoBehaviour
+    {
+        private void Awake()
+        {
+            Init();
+            DataLoader.LoadProjects();
+        }
+
+        public void Init()
+        {
+            var initializables = FindObjectsOfType<MonoBehaviour>(true).OfType<IInitializable>();
+            foreach (IInitializable initializable in initializables)
+            {
+                initializable.Init();
+            }
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (hasFocus)
+            {
+                BlurController.Instance.Deactivate();
+                return;
+            }
+            
+            BlurController.Instance.Activate();
+        }
+    }
 }

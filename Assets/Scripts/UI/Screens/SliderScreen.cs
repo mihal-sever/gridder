@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sever.UI
+namespace Sever.Gridder.UI
 {
     public enum ScreenPosition
     {
@@ -23,6 +23,22 @@ namespace Sever.UI
         private RectTransform _rectTransform;
         private RectTransform RectTransform => _rectTransform ??= GetComponentInChildren<RectTransform>(true);
 
+        private Vector2 _referenceResolution;
+
+        private Vector2 ReferenceResolution
+        {
+            get
+            {
+                if (_referenceResolution == Vector2.zero)
+                {
+                    var canvasScaler = GetComponent<CanvasScaler>() ? GetComponent<CanvasScaler>() : GetComponentInParent<CanvasScaler>();
+                    _referenceResolution = canvasScaler.referenceResolution;
+                }
+
+                return _referenceResolution;
+            }
+        }
+
         private Vector2 _offset;
 
         private Vector2 Offset
@@ -31,7 +47,7 @@ namespace Sever.UI
             {
                 if (_offset == Vector2.zero)
                 {
-                    _offset = new Vector2(GetComponentInParent<CanvasScaler>().referenceResolution.x, 0);
+                    _offset = new Vector2(ReferenceResolution.x, 0);
                 }
 
                 return _offset;
@@ -59,7 +75,7 @@ namespace Sever.UI
             float duration = _fromPosition == Vector2.zero ? 0 : _transitionDuration;
             _enterCompleted = false;
             gameObject.SetActive(true);
-            RectTransform.Move(RectTransform.anchoredPosition, Vector2.zero, duration,
+            RectTransform.Move(RectTransform.anchoredPosition, Vector2.zero, duration, LeanTweenType.notUsed,
                 () =>
                 {
                     _enterCompleted = true;
@@ -70,7 +86,7 @@ namespace Sever.UI
         public void Close(Action callback = null)
         {
             float duration = _toPosition == Vector2.zero ? 0 : _transitionDuration;
-            RectTransform.Move(RectTransform.anchoredPosition, _toPosition, duration,
+            RectTransform.Move(RectTransform.anchoredPosition, _toPosition, duration, LeanTweenType.notUsed,
                 () =>
                 {
                     RectTransform.Move(RectTransform.anchoredPosition, _fromPosition, 0);

@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace GridMapper.UI
+namespace Sever.Gridder.Editor
 {
     [RequireComponent(typeof(RectTransform))]
     public class ZoomController : MonoBehaviour

@@ -1,30 +1,28 @@
 using System.Collections.Generic;
 using System.Linq;
-using GridMapper.Data;
 using UnityEngine;
 
-namespace GridMapper
+namespace Sever.Gridder.Data
 {
     public class Project
     {
+        public string Guid { get; }
         public string Name { get; private set; }
 
         public float CanvasWidth { get; private set; }
         public float CanvasHeight { get; private set; }
         public int GridStep { get; private set; }
 
+        public float PixelsPerMm { get; private set; }
+        
         public string ImageExtension { get; private set; }
         public Sprite Image { get; private set; }
         public float ImageWidth { get; private set; }
         public float ImageHeight { get; private set; }
-
-
+        
         public List<KnobDto> Knobs { get; private set; }
 
-        // public float PixelsPerMm;
-        public string Guid { get; }
-
-
+        
         public Project(ProjectDto projectDto, Sprite image)
         {
             Guid = projectDto.guid;
@@ -48,9 +46,7 @@ namespace GridMapper
         public void UpdateImage(string imagePath, Sprite image, Vector2 size)
         {
             Image = image;
-            ImageWidth = size.x;
-            ImageHeight = size.y;
-
+            UpdateImageSize(size);
             SetImagePath(imagePath);
         }
 
@@ -58,6 +54,11 @@ namespace GridMapper
         {
             ImageWidth = size.x;
             ImageHeight = size.y;
+
+            if (CanvasWidth > 0)
+            {
+                PixelsPerMm = ImageWidth / CanvasWidth;
+            }
         }
 
         public void UpdateSettings(string name, float canvasWidth, float canvasHeight, int gridStep)
@@ -66,6 +67,11 @@ namespace GridMapper
             CanvasWidth = canvasWidth;
             CanvasHeight = canvasHeight;
             GridStep = gridStep;
+
+            if (ImageWidth > 0)
+            {
+                PixelsPerMm = ImageWidth / CanvasWidth;
+            }
         }
 
         private void SetImagePath(string path)

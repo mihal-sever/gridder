@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using GridMapper.Data;
 using Newtonsoft.Json;
+using Sever.Gridder.Data;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace GridMapper.Data
+namespace Sever.Gridder
 {
     public static class DataLoader
     {
