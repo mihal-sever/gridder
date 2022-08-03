@@ -3,9 +3,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sever.UI
+namespace GridMapper.UI
 {
-    public class MainScreen : BaseScreen
+    public class MainScreen : BaseScreen, IInitializable
     {
         [SerializeField] private TMP_InputField _canvasWidthInput;
         [SerializeField] private TMP_InputField _canvasHeightInput;
@@ -17,7 +17,7 @@ namespace Sever.UI
         private int? _gridStep;
 
 
-        protected override void Init()
+        public void Init()
         {
             gameObject.SetActive(false);
 
@@ -81,8 +81,8 @@ namespace Sever.UI
         {
             _canvasWidth = Mathf.Clamp(canvasWidth, 50, 5000);
 
-            ProjectData.PixelsPerMm = ProjectData.ImageWidth / _canvasWidth.Value;
-            _canvasHeight = ProjectData.ImageHeight / ProjectData.PixelsPerMm;
+            Project.PixelsPerMm = Project.ImageWidth / _canvasWidth.Value;
+            _canvasHeight = Project.ImageHeight / Project.PixelsPerMm;
 
             _canvasWidthInput.text = _canvasWidth.Value.ToString(CultureInfo.InvariantCulture);
             _canvasHeightInput.text = Mathf.RoundToInt(_canvasHeight.Value).ToString(CultureInfo.InvariantCulture);
@@ -114,9 +114,9 @@ namespace Sever.UI
                 return;
             }
 
-            ProjectData.CanvasWidth = _canvasWidth.Value;
-            ProjectData.CanvasHeight = _canvasHeight.Value;
-            ProjectData.GridStepMm = _gridStep.Value;
+            Project.CanvasWidth = _canvasWidth.Value;
+            Project.CanvasHeight = _canvasHeight.Value;
+            Project.GridStepMm = _gridStep.Value;
 
             EventBus.OnUserInputValidated();
         }

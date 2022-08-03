@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Sever
+namespace GridMapper
 {
     public static class LeanTweenExtensions
     {

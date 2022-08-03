@@ -10,4 +10,14 @@ public static class Extensions
         asyncOp.completed += obj => { tcs.SetResult(null); };
         return ((Task) tcs.Task).GetAwaiter();
     }
+
+    // use to avoid copying the whole material
+    public static void SetColor(this Renderer renderer, Color color)
+    {
+        var propertyBlock = new MaterialPropertyBlock();
+        renderer.GetPropertyBlock(propertyBlock);
+        propertyBlock.SetColor("_Color", color);
+        renderer.SetPropertyBlock(propertyBlock);
+    }
+    
 }
