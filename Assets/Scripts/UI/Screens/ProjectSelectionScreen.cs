@@ -37,9 +37,9 @@ namespace Sever.Gridder.UI
 
         private async Task CreateProject()
         {
-            await BlurController.Instance.Enable();
+            await BlurOverlay.Instance.Enable();
             bool isProjectCreated = await ProjectManager.CreateProject();
-            BlurController.Instance.Deactivate();
+            BlurOverlay.Instance.Deactivate();
             if (!isProjectCreated)
             {
                 return;

@@ -26,18 +26,18 @@ namespace Sever.Gridder.UI
             _yes.onClick.AddListener(()=>
             {
                 yesCallback();
-                BlurController.Instance.Deactivate();
+                BlurOverlay.Instance.Deactivate();
                 gameObject.SetActive(false);
             });
             
             _no.onClick.AddListener(()=>
             {
-                BlurController.Instance.Deactivate();
+                BlurOverlay.Instance.Deactivate();
                 gameObject.SetActive(false);
             });
 
             gameObject.SetActive(true);
-            BlurController.Instance.Activate();
+            BlurOverlay.Instance.Activate();
         }
     }
 }

@@ -9,38 +9,88 @@ namespace Krivodeling.UI.Effects
 {
     public class UIBlur : MonoBehaviour
     {
-        public Color Color { get => _color; set { _color = value; UpdateColor(); } }
+        public Color Color
+        {
+            get => _color;
+            set
+            {
+                _color = value;
+                UpdateColor();
+            }
+        }
 #if UNITY_EDITOR
         /// <summary>
         /// (Editor Only).
         /// </summary>
-        public FlipMode EditorFlipMode { get => _editorFlipMode; set { _editorFlipMode = value; UpdateFlipMode(); } }
+        public FlipMode EditorFlipMode
+        {
+            get => _editorFlipMode;
+            set
+            {
+                _editorFlipMode = value;
+                UpdateFlipMode();
+            }
+        }
 #endif
-        public FlipMode BuildFlipMode { get => _buildFlipMode; set { _buildFlipMode = value; UpdateFlipMode(); } }
-        public float Intensity { get => _intensity; set { _intensity = Mathf.Clamp01(value); UpdateIntensity(); } }
-        public float Multiplier { get => _multiplier; set { _multiplier = Mathf.Clamp01(value); UpdateMultiplier(); } }
-        public UnityEvent OnBeginBlur { get => _onBeginBlur; set => _onBeginBlur = value; }
-        public UnityEvent OnEndBlur { get => _onEndBlur; set => _onEndBlur = value; }
-        public BlurChangedEvent OnBlurChanged { get => _onBlurChanged; set => _onBlurChanged = value; }
+        public FlipMode BuildFlipMode
+        {
+            get => _buildFlipMode;
+            set
+            {
+                _buildFlipMode = value;
+                UpdateFlipMode();
+            }
+        }
 
-        [SerializeField]
-        private Color _color = Color.white;
+        public float Intensity
+        {
+            get => _intensity;
+            set
+            {
+                _intensity = Mathf.Clamp01(value);
+                UpdateIntensity();
+            }
+        }
+
+        public float Multiplier
+        {
+            get => _multiplier;
+            set
+            {
+                _multiplier = Mathf.Clamp01(value);
+                UpdateMultiplier();
+            }
+        }
+
+        public UnityEvent OnBeginBlur
+        {
+            get => _onBeginBlur;
+            set => _onBeginBlur = value;
+        }
+
+        public UnityEvent OnEndBlur
+        {
+            get => _onEndBlur;
+            set => _onEndBlur = value;
+        }
+
+        public BlurChangedEvent OnBlurChanged
+        {
+            get => _onBlurChanged;
+            set => _onBlurChanged = value;
+        }
+
+        
+        [SerializeField] private Color _color = Color.white;
 #if UNITY_EDITOR
-        [SerializeField]
-        private FlipMode _editorFlipMode;
+        [SerializeField] private FlipMode _editorFlipMode;
 #endif
-        [SerializeField]
-        private FlipMode _buildFlipMode;
-        [SerializeField, Range(0f, 1f)]
-        private float _intensity;
-        [SerializeField, Range(0f, 1f)]
-        private float _multiplier = 0.15f;
-        [SerializeField]
-        private UnityEvent _onBeginBlur;
-        [SerializeField]
-        private UnityEvent _onEndBlur;
-        [SerializeField]
-        private BlurChangedEvent _onBlurChanged;
+        [SerializeField] private FlipMode _buildFlipMode;
+        [SerializeField, Range(0f, 1f)] private float _intensity;
+        [SerializeField, Range(0f, 1f)] private float _multiplier = 0.15f;
+        [SerializeField] private UnityEvent _onBeginBlur;
+        [SerializeField] private UnityEvent _onEndBlur;
+        [SerializeField] private BlurChangedEvent _onBlurChanged;
 
         private Material _material;
         private int _colorId;
@@ -93,14 +143,25 @@ namespace Krivodeling.UI.Effects
         private Material FindMaterial()
         {
             Material material = GetComponent<Image>().material;
+            if (material)
+            {
+                var newMaterial = new Material(material);
+                GetComponent<Image>().material = newMaterial;
+                return newMaterial;
+            }
 
-            if (material == null)
-                material = GetComponent<Renderer>().material;
+            material = GetComponent<Renderer>().material;
+            if (material)
+            {
+                var newMaterial = new Material(material);
+                GetComponent<Renderer>().material = newMaterial;
+                return newMaterial;
+            }
 
-            if (material == null)
+            if (!material)
                 throw new NullReferenceException("Material not found");
 
-            return material;
+            return null;
         }
 
         private void UpdateColor()
@@ -176,28 +237,32 @@ namespace Krivodeling.UI.Effects
         }
 
         [Serializable]
-        public class BlurChangedEvent : UnityEvent<float> { }
+        public class BlurChangedEvent : UnityEvent<float>
+        {
+        }
 
         #region Editor
-#if UNITY_EDITOR
-        private void OnValidate()
-        {
-            UpdateBlurInEditor();
-        }
 
-        private void UpdateBlurInEditor()
-        {
-            Material material = FindMaterial();
+// #if UNITY_EDITOR
+//         private void OnValidate()
+//         {
+//             UpdateBlurInEditor();
+//         }
+//
+//         private void UpdateBlurInEditor()
+//         {
+//             Material material = FindMaterial();
+//
+//             material.SetColor("_Color", Color);
+//             material.SetFloat("_FlipX", EditorFlipMode.HasFlag(FlipMode.X) ? 1f : 0f);
+//             material.SetFloat("_FlipY", EditorFlipMode.HasFlag(FlipMode.Y) ? 1f : 0f);
+//             material.SetFloat("_Intensity", Intensity);
+//             material.SetFloat("_Multiplier", Multiplier);
+//
+//             EditorUtility.SetDirty(material);
+//         }
+// #endif
 
-            material.SetColor("_Color", Color);
-            material.SetFloat("_FlipX", EditorFlipMode.HasFlag(FlipMode.X) ? 1f : 0f);
-            material.SetFloat("_FlipY", EditorFlipMode.HasFlag(FlipMode.Y) ? 1f : 0f);
-            material.SetFloat("_Intensity", Intensity);
-            material.SetFloat("_Multiplier", Multiplier);
-
-            EditorUtility.SetDirty(material);
-        }
-#endif
         #endregion
     }
 }

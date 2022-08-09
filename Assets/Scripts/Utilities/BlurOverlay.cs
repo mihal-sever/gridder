@@ -7,13 +7,13 @@ using UnityEngine;
 namespace Sever.Gridder.UI
 {
     [RequireComponent(typeof(UIBlur))]
-    public class BlurController : MonoBehaviour, IInitializable
+    public class BlurOverlay : MonoBehaviour, IInitializable
     {
         [SerializeField] private float _blurInSpeed = 3f;
         [SerializeField] private float _blurOutSpeed = 6f;
 
-        private static BlurController _instance;
-        public static BlurController Instance => _instance ??= FindObjectOfType<BlurController>(true);
+        private static BlurOverlay _instance;
+        public static BlurOverlay Instance => _instance ??= FindObjectOfType<BlurOverlay>(true);
 
         private UIBlur _blur;
         

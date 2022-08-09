@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Sever.Gridder.UI
 {
@@ -11,6 +13,7 @@ namespace Sever.Gridder.UI
 
         public bool IsFinished => _items.Count == _maxItems;
         public bool IsEmpty => _items.Count == 0;
+        
         
         public void Init(int maxItems)
         {
