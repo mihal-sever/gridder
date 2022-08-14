@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Sever.Gridder.Data
@@ -13,12 +12,9 @@ namespace Sever.Gridder.Data
         public float CanvasHeight { get; private set; }
         public int GridStep { get; private set; }
 
-        public float PixelsPerMm { get; private set; }
-        
-        public string ImageExtension { get; private set; }
+        public float PixelsPerMm { get; set; }
+
         public Sprite Image { get; private set; }
-        public float ImageWidth { get; private set; }
-        public float ImageHeight { get; private set; }
         
         public List<KnobDto> Knobs { get; private set; }
 
@@ -31,34 +27,17 @@ namespace Sever.Gridder.Data
             CanvasWidth = projectDto.canvasWidth;
             Knobs = projectDto.knobs;
             Image = image;
-
-            SetImagePath(projectDto.imageExtension);
         }
 
-        public Project(string imagePath, Sprite image)
+        public Project(Sprite image)
         {
             Guid = System.Guid.NewGuid().ToString();
             Image = image;
-
-            SetImagePath(imagePath);
         }
 
-        public void UpdateImage(string imagePath, Sprite image, Vector2 size)
+        public void UpdateImage(Sprite image)
         {
             Image = image;
-            UpdateImageSize(size);
-            SetImagePath(imagePath);
-        }
-
-        public void UpdateImageSize(Vector2 size)
-        {
-            ImageWidth = size.x;
-            ImageHeight = size.y;
-
-            if (CanvasWidth > 0)
-            {
-                PixelsPerMm = ImageWidth / CanvasWidth;
-            }
         }
 
         public void UpdateSettings(string name, float canvasWidth, float canvasHeight, int gridStep)
@@ -67,23 +46,11 @@ namespace Sever.Gridder.Data
             CanvasWidth = canvasWidth;
             CanvasHeight = canvasHeight;
             GridStep = gridStep;
-
-            if (ImageWidth > 0)
-            {
-                PixelsPerMm = ImageWidth / CanvasWidth;
-            }
         }
 
-        private void SetImagePath(string path)
+        public void UpdateKnobs(List<KnobDto> knobs)
         {
-            if (path.Contains(Application.persistentDataPath))
-            {
-                ImageExtension = path;
-                return;
-            }
-
-            var ext = path.Split('.').Last();
-            ImageExtension = ext;
+            Knobs = knobs;
         }
     }
 }

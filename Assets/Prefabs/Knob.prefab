@@ -107,9 +107,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _panel: {fileID: 2793341599084349282}
   _coordinates: {fileID: 5416292753378365773}
-  _defaultColor: {r: 0, g: 1, b: 1, a: 1}
-  _selectedColor: {r: 0, g: 1, b: 0, a: 1}
-  _finishedColor: {r: 1, g: 0, b: 0, a: 1}
+  _defaultColor: {r: 0.4, g: 1, b: 1, a: 1}
+  _selectedColor: {r: 0.6627451, g: 1, b: 0.60784316, a: 1}
+  _finishedColor: {r: 1, g: 0.44313726, b: 0.44313726, a: 1}
 --- !u!1 &2537943520358796527
 GameObject:
   m_ObjectHideFlags: 0
@@ -381,7 +381,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.4, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

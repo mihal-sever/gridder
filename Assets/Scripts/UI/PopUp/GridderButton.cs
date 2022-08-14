@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,7 +6,7 @@ using UnityEngine.UI;
 namespace Sever.Gridder.UI
 {
     [RequireComponent(typeof(Image))]
-    public class PopUpButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class GridderButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private Color _defaultColor;
         [SerializeField] private Color _defaultTextColor;

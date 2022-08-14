@@ -8,7 +8,6 @@ namespace Sever.Gridder.Data
     {
         public string guid;
         public string name;
-        public string imageExtension;
         public int gridStep;
         public float canvasWidth;
         public List<KnobDto> knobs;

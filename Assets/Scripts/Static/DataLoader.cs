@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Sever.Gridder.Data;
+using Sever.Gridder.UI;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -12,7 +13,7 @@ namespace Sever.Gridder
 {
     public static class DataLoader
     {
-        public static async Task<Sprite> LoadSpriteFromDisk(string path)
+        public static async Task<Sprite> LoadSpriteFromDisk(string path, bool tryRotate = true)
         {
             if (!File.Exists(path))
             {
@@ -22,28 +23,33 @@ namespace Sever.Gridder
             using var request = UnityWebRequestTexture.GetTexture(new Uri(path));
             await request.SendWebRequest();
             var texture = DownloadHandlerTexture.GetContent(request);
-            var sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(.5f, .5f));
+            if (tryRotate)
+            {
+                texture = texture.Rotate(path);
+            }
 
+            var sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(.5f, .5f));
+            
             return sprite;
         }
 
-        public static void CreateProject(Project project, string imagePath)
+        public static void CreateProject(Project project)
         {
             var projectDirectory = GetProjectDirectory(project.Guid);
             if (Directory.Exists(projectDirectory))
             {
                 return;
             }
-            
             Directory.CreateDirectory(projectDirectory);
             
-            var newImagePath = GetImagePath(project.Guid, project.ImageExtension);
-            File.Copy(imagePath, newImagePath);
+            var imagePath = GetImagePath(project.Guid);
+            var textureBytes = project.Image.texture.EncodeToPNG();
+            File.WriteAllBytes(imagePath, textureBytes);
             
             SaveProject(project);
         }
-
-        public static void SaveProject(Project project)
+        
+        public static async Task SaveProject(Project project)
         {
             var projectDto = new ProjectDto
             {
@@ -51,12 +57,11 @@ namespace Sever.Gridder
                 name = project.Name,
                 gridStep = project.GridStep,
                 canvasWidth = project.CanvasWidth,
-                imageExtension = project.ImageExtension,
                 knobs = project.Knobs
             };
-            
+
             var json = JsonConvert.SerializeObject(projectDto, Formatting.Indented);
-            File.WriteAllTextAsync(GetDataPath(project.Guid), json);
+            await File.WriteAllTextAsync(GetDataPath(project.Guid), json);
         }
 
         public static void DeleteProject(Project project)
@@ -66,9 +71,10 @@ namespace Sever.Gridder
             {
                 return;
             }
+
             Directory.Delete(projectDirectory, true);
         }
-        
+
         public static async Task<Project> LoadProject(string projectGuid)
         {
             var dataPath = GetDataPath(projectGuid);
@@ -79,29 +85,41 @@ namespace Sever.Gridder
 
             var json = await File.ReadAllTextAsync(dataPath);
             var projectDto = JsonUtility.FromJson<ProjectDto>(json);
-            var imagePath = GetImagePath(projectGuid, projectDto.imageExtension);
-            var sprite = await LoadSpriteFromDisk(imagePath);
+            var imagePath = GetImagePath(projectGuid);
+            var sprite = await LoadSpriteFromDisk(imagePath, false);
             var project = new Project(projectDto, sprite);
-
+            
             return project;
         }
 
         public static async Task LoadProjects()
         {
-            var projects = new List<Project>();
-            var directories = Directory.EnumerateDirectories(Application.persistentDataPath);
-            foreach (string directory in directories)
+            try
             {
-                var projectGuid = directory.Split('/').Last();
-                var project = await LoadProject(projectGuid);
-                projects.Add(project);
-            }
+                var projects = new List<Project>();
+                var directories = Directory.EnumerateDirectories(Application.persistentDataPath);
+                var projectsToLoad = directories.Count();
+                var loadedProjects = 0;
+                
+                foreach (string directory in directories)
+                {
+                    var projectGuid = directory.Split('/').Last();
+                    var project = await LoadProject(projectGuid);
+                    projects.Add(project);
+                    loadedProjects++;
+                    ProgressBar.UpdateProgress((float) loadedProjects / projectsToLoad);
+                }
 
-            ProjectManager.SetProjects(projects);
+                ProjectManager.SetProjects(projects);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"{e.Message}\n\n{e.StackTrace}");
+            }
         }
 
         private static string GetProjectDirectory(string projectGuid) => Path.Combine(Application.persistentDataPath, projectGuid);
         private static string GetDataPath(string projectGuid) => Path.Combine(GetProjectDirectory(projectGuid), "data.json");
-        private static string GetImagePath(string projectGuid, string ext) => Path.Combine(GetProjectDirectory(projectGuid), $"image.{ext}");
+        private static string GetImagePath(string projectGuid) => Path.Combine(GetProjectDirectory(projectGuid), "image.png");
     }
 }

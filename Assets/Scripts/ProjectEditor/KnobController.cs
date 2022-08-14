@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using System.Linq;
 using Sever.Gridder.Data;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Sever.Gridder.Editor
 {
-    public class KnobController : MonoBehaviour, IInitializable, IPointerClickHandler
+    public class KnobController : MonoBehaviour, IPointerClickHandler
     {
         [SerializeField] private GameObject _imagePanel;
         [SerializeField] private Transform _knobsParent;
@@ -13,18 +14,18 @@ namespace Sever.Gridder.Editor
 
         private readonly List<KnobButton> _knobs = new();
         private KnobButton _lastSelectedButton;
-        private float _maxKnobPanelPositionX;
         private Project _project;
         
-
-        public void Init()
-        {
-            _maxKnobPanelPositionX = _imagePanel.GetComponent<RectTransform>().rect.size.x - 200;
-            
-        }
+        private const float MaxKnobPanelPositionX = 1100;
+        
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (eventData.dragging)
+            {
+                return;
+            }
+            
             if (!eventData.hovered.Contains(_imagePanel) || _lastSelectedButton)
             {
                 if (!_lastSelectedButton)
@@ -39,7 +40,7 @@ namespace Sever.Gridder.Editor
             }
 
             var knob = Instantiate(_knobPrefab, eventData.position, Quaternion.identity, _knobsParent).GetComponent<KnobButton>();
-            knob.Init(_project, _maxKnobPanelPositionX, SelectKnob);
+            knob.Init(_project, MaxKnobPanelPositionX, SelectKnob);
             _knobs.Add(knob);
         }
 
@@ -61,7 +62,12 @@ namespace Sever.Gridder.Editor
                 _lastSelectedButton.ToggleFinished();
             }
         }
-        
+
+        public void Save()
+        {
+            _project?.UpdateKnobs(_knobs.Select(x => x.GetKnobDto()).ToList());
+        }
+
         public void Clear()
         {
             _project = null;
@@ -91,12 +97,12 @@ namespace Sever.Gridder.Editor
             {
                 var knob = Instantiate(_knobPrefab, _knobsParent).GetComponent<KnobButton>();
                 var anchoredPosition = new Vector2(knobDto.x, knobDto.y);
-                knob.Init(_project, knobDto.isFinished, anchoredPosition, _maxKnobPanelPositionX, SelectKnob);
+                knob.Init(_project, knobDto.isFinished, anchoredPosition, MaxKnobPanelPositionX, SelectKnob);
                 _knobs.Add(knob);
             }
         }
-        
-        private void SelectKnob(KnobButton knob)
+
+        public void SelectKnob(KnobButton knob)
         {
             if (_lastSelectedButton && _lastSelectedButton != knob)
             {

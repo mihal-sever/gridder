@@ -12,13 +12,13 @@ namespace Sever.Gridder.UI
         [SerializeField] private ProjectSettingsPanel _settingsPanel;
 
         private Sprite _sprite;
-        private string _path;
         private Project _project;
 
 
         public void Init()
         {
             _previewImage.preserveAspect = true;
+            _previewImage.type = Image.Type.Simple;
 
             _closeButton.onClick.AddListener(ScreenController.OpenScreen<ProjectSelectionScreen>);
             _changeImageButton.onClick.AddListener(ChooseImage);
@@ -30,38 +30,42 @@ namespace Sever.Gridder.UI
         {
             _project = project;
             _settingsPanel.SetProject(_project, ApplySettings);
+
+            _sprite = _project.Image;
+            _previewImage.sprite = _sprite;
+            _previewImage.gameObject.SetActive(true);
         }
 
         private void ApplySettings()
         {
-            ProjectManager.AddProject(_project, _path);
+            ProjectManager.AddProject(_project);
             EventBus.OnProjectSelected(_project);
             ScreenController.OpenScreen<EditorScreen>();
         }
 
         private void ChooseImage()
         {
-            _path = FileManager.ChooseImageFromDisk();
-            if (_path == null)
-            {
-                return;
-            }
-
             DownloadImage();
-            _project.UpdateImage(_path, _sprite, _previewImage.rectTransform.rect.size);
         }
 
         private async void DownloadImage()
         {
-            _sprite = await DataLoader.LoadSpriteFromDisk(_path);
+            var path = TextureUtility.ChooseImageFromDisk();
+            if (path == null)
+            {
+                return;
+            }
+
+            _sprite = await DataLoader.LoadSpriteFromDisk(path);
             _previewImage.sprite = _sprite;
             _previewImage.gameObject.SetActive(true);
+            _project.UpdateImage(_sprite);
+            _settingsPanel.UpdateCanvasSize(_sprite.texture.width, _sprite.texture.height);
         }
 
         private void Reset()
         {
             _sprite = null;
-            _path = null;
             _previewImage.sprite = null;
             _previewImage.gameObject.SetActive(false);
         }

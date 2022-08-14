@@ -47,7 +47,7 @@ namespace Sever.Gridder.UI
             {
                 if (_offset == Vector2.zero)
                 {
-                    _offset = new Vector2(ReferenceResolution.x, 0);
+                    _offset = new Vector2(RectTransform.rect.size.x, 0); //new Vector2(ReferenceResolution.x, 0);
                 }
 
                 return _offset;

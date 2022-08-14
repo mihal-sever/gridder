@@ -1,5 +1,6 @@
 using System;
 using Sever.Gridder.Data;
+using Sever.Gridder.UI;
 
 namespace Sever.Gridder
 {
@@ -9,11 +10,12 @@ namespace Sever.Gridder
         public static event Action<Project> ProjectSelected;
         public static event Action ProjectDeleted;
         public static event Action<Project> ProjectCreated;
-        public static event Action<ProjectDto> ProjectLoaded;
+        public static event Action<Project> ProjectAdded;
 
 
         public static void OnProjectsLoaded()
         {
+            ScreenController.OpenScreen<ProjectSelectionScreen>();
             ProjectsLoaded?.Invoke();
         }
 
@@ -32,9 +34,9 @@ namespace Sever.Gridder
             ProjectCreated?.Invoke(project);
         }
 
-        public static void OnProjectLoaded(ProjectDto projectDto)
+        public static void OnProjectAdded(Project project)
         {
-            ProjectLoaded?.Invoke(projectDto);
+            ProjectAdded?.Invoke(project);
         }
     }
 }

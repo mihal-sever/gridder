@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Sever.Gridder.Data;
@@ -12,21 +13,20 @@ namespace Sever.Gridder.Editor
         [SerializeField] private Transform _grid;
         [SerializeField] private GameObject _verticalLinePrefab;
         [SerializeField] private GameObject _horizontalLinePrefab;
-        
+
         private Project _project;
         private readonly List<GameObject> _verticalLines = new();
         private readonly List<GameObject> _horizontalLines = new();
-
+        private Vector2 _imageSize;
         
+
         public void Clear()
         {
-            _image.sprite = null;
-
             foreach (GameObject gridPart in _verticalLines)
             {
                 Destroy(gridPart);
             }
-            
+
             foreach (GameObject gridPart in _horizontalLines)
             {
                 Destroy(gridPart);
@@ -38,13 +38,11 @@ namespace Sever.Gridder.Editor
 
         public void SetProject(Project project)
         {
-            if (_project == project)
-            {
-                return;
-            }
-
-            Clear();
             _project = project;
+        }
+
+        private void OnEnable()
+        {
             StartCoroutine(Setup());
         }
 
@@ -56,8 +54,7 @@ namespace Sever.Gridder.Editor
 
             float imageScaleFactor = GetComponent<RectTransform>().rect.size.x / _image.sprite.texture.width;
             _image.rectTransform.sizeDelta = new Vector2(0, _image.sprite.texture.height * imageScaleFactor);
-
-            _project.UpdateImageSize(_image.rectTransform.rect.size);
+            _imageSize = _image.rectTransform.rect.size;
             CreateGrid();
         }
 
@@ -69,10 +66,11 @@ namespace Sever.Gridder.Editor
 
         private void CreateGrid()
         {
+            _project.PixelsPerMm = _imageSize.x / _project.CanvasWidth;
             var gridStepPixel = _project.GridStep * _project.PixelsPerMm;
-            int horizontalCellsCount = Mathf.CeilToInt(_project.ImageWidth / gridStepPixel);
-            int verticalCellsCount = Mathf.CeilToInt(_project.ImageHeight / gridStepPixel);
-            
+            int horizontalCellsCount = Mathf.CeilToInt(_imageSize.x / gridStepPixel);
+            int verticalCellsCount = Mathf.CeilToInt(_imageSize.y / gridStepPixel);
+
             for (int i = 1; i < horizontalCellsCount; i++)
             {
                 var line = Instantiate(_verticalLinePrefab, _grid).GetComponent<RectTransform>();
@@ -83,7 +81,7 @@ namespace Sever.Gridder.Editor
             for (int i = 1; i < verticalCellsCount; i++)
             {
                 var line = Instantiate(_horizontalLinePrefab, _grid).GetComponent<RectTransform>();
-                line.anchoredPosition = new Vector2(0, gridStepPixel * i);
+                line.anchoredPosition = new Vector2(0, -gridStepPixel * i);
                 _horizontalLines.Add(line.gameObject);
             }
         }

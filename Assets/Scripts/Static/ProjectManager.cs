@@ -1,7 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Sever.Gridder.Data;
-using UnityEngine;
 
 namespace Sever.Gridder
 {
@@ -28,23 +28,23 @@ namespace Sever.Gridder
 
         public static async Task<bool> CreateProject()
         {
-            var path = FileManager.ChooseImageFromDisk();
+            var path = TextureUtility.ChooseImageFromDisk();
             if (string.IsNullOrEmpty(path))
             {
                 return false;
             }
 
             var sprite = await DataLoader.LoadSpriteFromDisk(path);
-            var project = new Project(path, sprite);
-            DataLoader.CreateProject(project, path);
+            var project = new Project(sprite);
             EventBus.OnProjectCreated(project);
             return true;
         }
 
-        public static void AddProject(Project project, string imagePath)
+        public static void AddProject(Project project)
         {
-            DataLoader.CreateProject(project, imagePath);
+            DataLoader.CreateProject(project);
             Projects.Add(project);
+            EventBus.OnProjectAdded(project);
         }
 
         public static void DeleteProject(Project project)
@@ -54,9 +54,10 @@ namespace Sever.Gridder
             EventBus.OnProjectDeleted();
         }
 
-        public static void SaveProject(Project project)
+        public static async Task SaveProject(Project project, Action callback = null)
         {
-            DataLoader.SaveProject(project);
+            await DataLoader.SaveProject(project);
+            callback?.Invoke();
         }
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Sever.Gridder.UI
 {
@@ -17,11 +18,14 @@ namespace Sever.Gridder.UI
         private RectTransform _rectTransform;
         private Page _currentPage;
         private int _openedPageIndex;
+        private float _swipeOffset;
 
 
         public void Init()
         {
             _rectTransform = GetComponent<RectTransform>();
+            _swipeOffset = GetComponent<HorizontalLayoutGroup>().spacing + _rectTransform.rect.size.x;
+            
             _currentPage = AddPage();
         }
 
@@ -127,7 +131,7 @@ namespace Sever.Gridder.UI
 
         private void SwipePage()
         {
-            _rectTransform.Move(_rectTransform.anchoredPosition, new Vector2(-_openedPageIndex * _rectTransform.rect.size.x, 0), _moveDuration,
+            _rectTransform.Move(_rectTransform.anchoredPosition, new Vector2(-_openedPageIndex * _swipeOffset, 0), _moveDuration,
                 LeanTweenType.easeInOutCubic);
         }
     }

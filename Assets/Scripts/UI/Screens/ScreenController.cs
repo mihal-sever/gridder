@@ -22,7 +22,7 @@ namespace Sever.Gridder.UI
                 screen.gameObject.SetActive(false);
             }
 
-            OpenScreen<ProjectSelectionScreen>();
+            OpenScreen<ProgressBar>();
         }
 
         public static void OpenScreen<T>() where T : BaseScreen

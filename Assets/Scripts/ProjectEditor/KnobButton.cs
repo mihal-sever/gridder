@@ -34,7 +34,7 @@ namespace Sever.Gridder.Editor
         {
             _button ??= GetComponent<Button>();
             _rectTransform ??= GetComponent<RectTransform>();
-            
+
             _button.onClick.AddListener(OnClick);
             ShowCoordinatesPanel();
         }
@@ -49,10 +49,21 @@ namespace Sever.Gridder.Editor
 
         public void Init(Project project, bool isFinished, Vector2 anchoredPosition, float maxPositionX, Action<KnobButton> onSelected)
         {
-            Init();
-            _isFinished = isFinished;
-            _rectTransform.anchoredPosition = anchoredPosition;
+            // Init();
             Init(project, maxPositionX, onSelected);
+            _isFinished = isFinished;
+            _button.image.color = _isFinished ? _finishedColor : _defaultColor;
+            _rectTransform.anchoredPosition = anchoredPosition;
+        }
+
+        public KnobDto GetKnobDto()
+        {
+            return new KnobDto
+            {
+                isFinished = _isFinished,
+                x = _rectTransform.anchoredPosition.x,
+                y = _rectTransform.anchoredPosition.y
+            };
         }
 
         public void SetSelected(bool isSelected)

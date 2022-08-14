@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using System.Threading.Tasks;
 using Sever.Gridder.Data;
 using TMPro;
 using UnityEngine;
@@ -14,6 +17,7 @@ namespace Sever.Gridder.UI
         [SerializeField] private Image _image;
         [SerializeField] private Button _deleteButton;
 
+        private Project _project;
         private Button _button;
         
         public RectTransform RectTransform { get;private set; }
@@ -24,15 +28,37 @@ namespace Sever.Gridder.UI
             _button = GetComponent<Button>();
             RectTransform = GetComponent<RectTransform>();
 
-            _name.text = project.Name;
+            _project = project;
+            _name.text = _project.Name;
             
-            var imageWidth = _button.image.rectTransform.rect.size.x;
-            var imageHeight = imageWidth * project.Image.texture.height / project.Image.texture.width;
-            _image.rectTransform.sizeDelta = new Vector2(imageWidth, imageHeight);
-            _image.sprite = project.Image;
-
             _button.onClick.AddListener(onSelected);
             _deleteButton.onClick.AddListener(onDeleted);
+
+            if (isActiveAndEnabled)
+            {
+                StartCoroutine(Setup());
+            }
+        }
+
+        private void OnEnable()
+        {
+            StartCoroutine(Setup());
+        }
+
+        private IEnumerator Setup()
+        {
+            if (_project == null)
+            {
+                yield break;
+            }
+            
+            yield return null;
+            
+            var imageWidth = _button.image.rectTransform.rect.size.x;
+            var imageHeight = imageWidth * _project.Image.texture.height / _project.Image.texture.width;
+            _image.rectTransform.sizeDelta = new Vector2(imageWidth, imageHeight);
+            _image.sprite = _project.Image;
+            _project = null;
         }
     }
 }

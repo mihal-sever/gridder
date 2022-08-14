@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Sever.Gridder.Data;
@@ -20,6 +21,7 @@ namespace Sever.Gridder.UI
             _paginationController.Init();
             _paginationController.AddItem<Button>(_createProjectButtonPrefab).onClick.AddListener(() => CreateProject());
             EventBus.ProjectsLoaded += OnProjectsLoaded;
+            EventBus.ProjectAdded += AddProject;
         }
 
         private void OnProjectsLoaded()
@@ -37,15 +39,22 @@ namespace Sever.Gridder.UI
 
         private async Task CreateProject()
         {
-            await BlurOverlay.Instance.Enable();
-            bool isProjectCreated = await ProjectManager.CreateProject();
-            BlurOverlay.Instance.Deactivate();
-            if (!isProjectCreated)
+            try
             {
-                return;
-            }
+                await BlurOverlay.Instance.Enable();
+                bool isProjectCreated = await ProjectManager.CreateProject();
+                BlurOverlay.Instance.Deactivate();
+                if (!isProjectCreated)
+                {
+                    return;
+                }
 
-            ScreenController.OpenScreen<CreateProjectScreen>();
+                ScreenController.OpenScreen<CreateProjectScreen>();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"{e.Message}\n\n{e.StackTrace}");
+            }
         }
 
         private void AddProject(Project project)
@@ -57,6 +66,7 @@ namespace Sever.Gridder.UI
             void SelectProject()
             {
                 EventBus.OnProjectSelected(project);
+                ScreenController.OpenScreen<EditorScreen>();
             }
 
             void DeleteProject()
