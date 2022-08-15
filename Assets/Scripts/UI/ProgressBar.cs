@@ -25,7 +25,7 @@ namespace Sever.Gridder.UI
 
         public static void UpdateProgress(float progress)
         {
-            LeanTween.value(Instance.gameObject, Instance._scrollbar.size, progress, .1f).setOnUpdate(
+            LeanTween.value(Instance.gameObject, Instance._scrollbar.size, progress, .2f).setOnUpdate(
                 value =>
                 {
                     Instance._scrollbar.size = value;

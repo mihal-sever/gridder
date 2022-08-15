@@ -100,6 +100,15 @@ namespace Sever.Gridder
                 var directories = Directory.EnumerateDirectories(Application.persistentDataPath);
                 var projectsToLoad = directories.Count();
                 var loadedProjects = 0;
+
+                if (projectsToLoad == 0)
+                {
+                    ScreenController.OpenScreen<ProjectSelectionScreen>();
+                }
+                else
+                {
+                    ScreenController.OpenScreen<ProgressBar>();
+                }
                 
                 foreach (string directory in directories)
                 {
@@ -110,6 +119,7 @@ namespace Sever.Gridder
                     ProgressBar.UpdateProgress((float) loadedProjects / projectsToLoad);
                 }
 
+                await Task.Delay(TimeSpan.FromSeconds(.5f));
                 ProjectManager.SetProjects(projects);
             }
             catch (Exception e)

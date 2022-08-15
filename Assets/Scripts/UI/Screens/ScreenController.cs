@@ -21,8 +21,6 @@ namespace Sever.Gridder.UI
                 screen.Setup(_screenAnimationDuration, ScreenPosition.Right, ScreenPosition.Left);
                 screen.gameObject.SetActive(false);
             }
-
-            OpenScreen<ProgressBar>();
         }
 
         public static void OpenScreen<T>() where T : BaseScreen
