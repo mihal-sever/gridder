@@ -134,7 +134,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 1.0
+  bundleVersion: 1.1
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -155,9 +155,9 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Standalone: com.sever.gridmapper
+    Standalone: com.sever.gridder
   buildNumber:
-    Standalone: 3
+    Standalone: 6
     iPhone: 0
     tvOS: 0
   overrideDefaultApplicationIdentifier: 1
