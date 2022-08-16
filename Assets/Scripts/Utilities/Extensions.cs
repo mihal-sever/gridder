@@ -21,5 +21,10 @@ namespace Sever.Gridder
             propertyBlock.SetColor("_Color", color);
             renderer.SetPropertyBlock(propertyBlock);
         }
+
+        public static Vector2 Abs(this Vector2 vector)
+        {
+            return new Vector2(Mathf.Abs(vector.x), Mathf.Abs(vector.y));
+        }
     }
 }

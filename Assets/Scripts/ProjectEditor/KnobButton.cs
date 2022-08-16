@@ -1,6 +1,5 @@
 using System;
 using Sever.Gridder.Data;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,103 +8,116 @@ namespace Sever.Gridder.Editor
     [RequireComponent(typeof(Button))]
     public class KnobButton : MonoBehaviour
     {
-        [SerializeField] private RectTransform _panel;
-        [SerializeField] private TMP_Text _coordinates;
+        [SerializeField] private KnobInfoPanel _infoPanel;
 
-        [Space, SerializeField] private Color _defaultColor = Color.cyan;
-        [SerializeField] private Color _selectedColor = Color.green;
-        [SerializeField] private Color _finishedColor = Color.red;
+        [Space, SerializeField] private Sprite _defaultSprite;
+        [SerializeField] private Sprite _selectedSprite;
+        [SerializeField] private Sprite _finishedSprite;
 
-        private readonly Vector3 _panelRightPosition = new(90, 8, 0);
-        private readonly Vector3 _panelLeftPosition = new(-106, 8, 0);
-        private float _maxPanelPositionX;
-        
-        private Project _project;
         private Button _button;
+        private Button Button => _button ??= GetComponent<Button>();
+
         private RectTransform _rectTransform;
+        private RectTransform RectTransform => _rectTransform ??= GetComponent<RectTransform>();
 
         private Action<KnobButton> _onSelected;
+        private KnobColor _color;
 
         private bool _isFinished;
+
+        private bool IsFinished
+        {
+            get => _isFinished;
+            set
+            {
+                if (_isFinished == value)
+                {
+                    return;
+                }
+
+                _isFinished = value;
+                UpdateSprite();
+            }
+        }
+
         private bool _isSelected;
 
-        
+        private bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                if (_isSelected == value)
+                {
+                    return;
+                }
+
+                _isSelected = value;
+                UpdateSprite();
+                _infoPanel.SetEnabled(_isSelected);
+                _onSelected?.Invoke(_isSelected ? this : null);
+            }
+        }
+
+
         private void Init()
         {
-            _button ??= GetComponent<Button>();
-            _rectTransform ??= GetComponent<RectTransform>();
-
-            _button.onClick.AddListener(OnClick);
-            ShowCoordinatesPanel();
+            Button.onClick.AddListener(OnClick);
         }
 
-        public void Init(Project project, float maxPositionX, Action<KnobButton> onSelected)
+        public void Init(Project project, KnobColor color, float maxPositionX, Action<KnobButton> onSelected)
         {
             Init();
-            _project = project;
-            _maxPanelPositionX = maxPositionX;
+            SetColor(color);
             _onSelected = onSelected;
+
+            _infoPanel.Init(project, RectTransform.anchoredPosition.Abs(), maxPositionX);
         }
 
-        public void Init(Project project, bool isFinished, Vector2 anchoredPosition, float maxPositionX, Action<KnobButton> onSelected)
+        public void Init(Project project, KnobDto knobDto, float maxPositionX, Action<KnobButton> onSelected)
         {
-            // Init();
-            Init(project, maxPositionX, onSelected);
-            _isFinished = isFinished;
-            _button.image.color = _isFinished ? _finishedColor : _defaultColor;
-            _rectTransform.anchoredPosition = anchoredPosition;
+            IsFinished = knobDto.isFinished;
+            RectTransform.anchoredPosition = new Vector2(knobDto.x, knobDto.y);
+            Init(project, knobDto.color, maxPositionX, onSelected);
+        }
+
+        public void SetColor(KnobColor color)
+        {
+            _color = color;
+            _defaultSprite = KnobColorSelector.GetSprite(_color);
+            UpdateSprite();
+        }
+
+        public void SetSelected(bool isSelected)
+        {
+            IsSelected = isSelected;
+        }
+
+        public void ToggleFinished()
+        {
+            IsFinished = !IsFinished;
         }
 
         public KnobDto GetKnobDto()
         {
             return new KnobDto
             {
-                isFinished = _isFinished,
-                x = _rectTransform.anchoredPosition.x,
-                y = _rectTransform.anchoredPosition.y
+                isFinished = IsFinished,
+                color = _color,
+                x = RectTransform.anchoredPosition.x,
+                y = RectTransform.anchoredPosition.y
             };
-        }
-
-        public void SetSelected(bool isSelected)
-        {
-            if (_isSelected == isSelected)
-            {
-                return;
-            }
-
-            _isSelected = isSelected;
-            _onSelected?.Invoke(this);
-                
-            ShowCoordinatesPanel();
-            _button.image.color = _isFinished ? _finishedColor :
-                _isSelected ? _selectedColor : _defaultColor;
-        }
-
-        public void ToggleFinished()
-        {
-            _isFinished = !_isFinished;
-            _button.image.color = _isFinished ? _finishedColor : _selectedColor;
         }
 
         private void OnClick()
         {
-            SetSelected(!_isSelected);
+            IsSelected = !IsSelected;
         }
 
-        private void ShowCoordinatesPanel()
+        private void UpdateSprite()
         {
-            _panel.gameObject.SetActive(_isSelected);
-
-            if (!_isSelected)
-            {
-                return;
-            }
-
-            var coordPixel = new Vector2(Mathf.Abs(_rectTransform.anchoredPosition.x), Mathf.Abs(_rectTransform.anchoredPosition.y));
-            var coordMm = coordPixel / _project.PixelsPerMm;
-            Vector2Int coordToClosestNode = new((int) coordMm.x % _project.GridStep, (int) coordMm.y % _project.GridStep);
-            _panel.anchoredPosition = coordPixel.x < _maxPanelPositionX ? _panelRightPosition : _panelLeftPosition;
-            _coordinates.text = $"x: {coordToClosestNode.x}, y: {coordToClosestNode.y}";
+            Button.image.sprite = IsFinished ? _finishedSprite :
+                IsSelected ? _selectedSprite : _defaultSprite;
         }
     }
 }

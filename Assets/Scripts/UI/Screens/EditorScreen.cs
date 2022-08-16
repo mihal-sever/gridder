@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Sever.Gridder.Data;
 using Sever.Gridder.Editor;
 using UnityEngine;
@@ -27,7 +28,7 @@ namespace Sever.Gridder.UI
             _settingsPanel.Close();
             
             _settingsButton.onClick.AddListener(OpenSettings);
-            _saveButton.onClick.AddListener(() => ProjectManager.SaveProject(_project, OnSaved));
+            _saveButton.onClick.AddListener(() => Save());
             _backButton.onClick.AddListener(CloseProject);
             
             EventBus.ProjectSelected += OpenProject;
@@ -45,17 +46,6 @@ namespace Sever.Gridder.UI
             _settingsPanel.Open();
         }
 
-        private void OnSaved()
-        {
-            LeanTween.alphaCanvas(_savedConfirmation, 1, 0);
-            _savedConfirmation.gameObject.SetActive(true);
-
-            LeanTween.alphaCanvas(_savedConfirmation, 0, 1f).setOnComplete(() =>
-            {
-                _savedConfirmation.gameObject.SetActive(false);
-            });
-    }
-        
         private void OpenProject(Project project)
         {
             if (_project == project)
@@ -89,10 +79,19 @@ namespace Sever.Gridder.UI
             ScreenController.OpenScreen<ProjectSelectionScreen>();
         }
 
-        private void Save()
+        private async Task Save()
         {
             _knobController.Save();
-            DataLoader.SaveProject(_project);
+            await DataLoader.SaveProject(_project);
+
+            if (!isActiveAndEnabled)
+            {
+                return;
+            }
+            
+            LeanTween.alphaCanvas(_savedConfirmation, 1, 0);
+            _savedConfirmation.gameObject.SetActive(true);
+            LeanTween.alphaCanvas(_savedConfirmation, 0, 1f).setOnComplete(() => { _savedConfirmation.gameObject.SetActive(false); });
         }
     }
 }

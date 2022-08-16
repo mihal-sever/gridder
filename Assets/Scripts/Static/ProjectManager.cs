@@ -53,11 +53,5 @@ namespace Sever.Gridder
             DataLoader.DeleteProject(project);
             EventBus.OnProjectDeleted();
         }
-
-        public static async Task SaveProject(Project project, Action callback = null)
-        {
-            await DataLoader.SaveProject(project);
-            callback?.Invoke();
-        }
     }
 }

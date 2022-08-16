@@ -1,4 +1,5 @@
 using System;
+using Sever.Gridder.Editor;
 using UnityEngine;
 
 namespace Sever.Gridder.Data
@@ -7,6 +8,7 @@ namespace Sever.Gridder.Data
     public class KnobDto
     {
         public bool isFinished;
+        public KnobColor color;
         public float x;
         public float y;
     }
