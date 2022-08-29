@@ -46,7 +46,6 @@ namespace Sever.Gridder.Editor
                 }
 
                 IsFired = true;
-                Debug.LogError($"{_keyCodes[0]} {_keyCodes[1]}");
                 _onHotkeyPress.Invoke();
             }
 

@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,7 @@ namespace Sever.Gridder.UI
         private static PopUp _instance;
         public static PopUp Instance => _instance ??= FindObjectOfType<PopUp>(true);
 
+        [SerializeField] private TMP_Text _message;
         [SerializeField] private Button _yes;
         [SerializeField] private Button _no;
 
@@ -18,8 +20,9 @@ namespace Sever.Gridder.UI
             gameObject.SetActive(false);
         }
 
-        public void ShowPopUp(Action yesCallback)
+        public void ShowPopUp(string message, Action yesCallback)
         {
+            _message.text = message;
             _yes.onClick.RemoveAllListeners();
             _no.onClick.RemoveAllListeners();
 

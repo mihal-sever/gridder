@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Sever.Gridder.CommandSystem;
 using Sever.Gridder.Data;
 using Sever.Gridder.UI;
@@ -30,6 +31,12 @@ namespace Sever.Gridder.Editor
             }
 
             var command = new DeleteKnobCommand(Instance._knobController);
+            CommandsManager.Add(command);
+        }
+
+        public static void DeleteAllKnobs(KnobController knobController)
+        {
+            var command = new DeleteAllKnobsCommand(knobController);
             CommandsManager.Add(command);
         }
 

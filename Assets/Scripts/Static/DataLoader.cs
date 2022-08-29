@@ -57,7 +57,7 @@ namespace Sever.Gridder
                 settings = project.Settings,
                 knobs = project.Knobs
             };
-
+            
             var json = JsonConvert.SerializeObject(projectDto, Formatting.Indented);
             await File.WriteAllTextAsync(GetDataPath(project.Guid), json);
         }

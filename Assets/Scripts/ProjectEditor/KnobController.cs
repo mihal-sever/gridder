@@ -3,27 +3,29 @@ using System.Linq;
 using Sever.Gridder.Data;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Sever.Gridder.Editor
 {
-    public class KnobController : MonoBehaviour, IInitializable, IPointerClickHandler
+    public class KnobController : MonoBehaviour, IPointerClickHandler
     {
-        [SerializeField] private KnobColorSelector _colorSelector;
         [SerializeField] private GameObject _imagePanel;
         [SerializeField] private Transform _knobsParent;
         [SerializeField] private GameObject _knobPrefab;
 
         private readonly List<KnobButton> _knobs = new();
-        private Project _project;
+        public Project _project;
         private KnobColor _knobColor;
+        private Button _cleanKnobsButton;
 
         private const float MaxKnobPanelPositionX = 1100;
 
         public KnobButton LastSelectedKnob { get; private set; }
-        
 
-        public void Init()
+
+        public void Init(Button cleanAllKnobsButton)
         {
+            _cleanKnobsButton = cleanAllKnobsButton;
             EventBus.ColorSelected += SetKnobColor;
         }
 
@@ -47,41 +49,47 @@ namespace Sever.Gridder.Editor
                 return;
             }
 
-            Debug.LogError($"add knob");
             EditorController.AddKnob(eventData.position);
         }
 
         public KnobButton AddKnob(Vector3 position)
         {
-            Debug.LogError($"add knob {_knobColor}");
             var knob = Instantiate(_knobPrefab, position, Quaternion.identity, _knobsParent).GetComponent<KnobButton>();
             knob.Init(_project, _knobColor, MaxKnobPanelPositionX, EditorController.SelectKnob);
             _knobs.Add(knob);
+            _cleanKnobsButton.interactable = true;
             return knob;
         }
-        
+
         public void AddKnob(KnobDto knobDto)
         {
             var knob = Instantiate(_knobPrefab, _knobsParent).GetComponent<KnobButton>();
             knob.Init(_project, knobDto, MaxKnobPanelPositionX, EditorController.SelectKnob);
             _knobs.Add(knob);
+            _cleanKnobsButton.interactable = true;
         }
-        
+
         public void DeleteKnob(KnobButton knob)
         {
             LastSelectedKnob = null;
             _knobs.Remove(knob);
+            _cleanKnobsButton.interactable = _knobs.Count > 0;
             Destroy(knob.gameObject);
         }
 
         public void Save()
         {
-            _project?.UpdateKnobs(_knobs.Select(x => x.GetKnobDto()).ToList());
+            _project?.UpdateKnobs(GetKnobsDto());
         }
 
-        public void Clear()
+        public List<KnobDto> GetKnobsDto()
         {
-            _project = null;
+            return _knobs.Select(x => x.GetKnobDto()).ToList();
+        }
+
+        public void DeleteAllKnobs()
+        {
+            _cleanKnobsButton.interactable = false;
             LastSelectedKnob = null;
             foreach (KnobButton knob in _knobs)
             {
@@ -89,6 +97,12 @@ namespace Sever.Gridder.Editor
             }
 
             _knobs.Clear();
+        }
+
+        public void Clear()
+        {
+            _project = null;
+            DeleteAllKnobs();
         }
 
         public void SetProject(Project project)
@@ -110,7 +124,7 @@ namespace Sever.Gridder.Editor
                 AddKnob(knobDto);
             }
         }
-        
+
         public void SelectKnob(KnobButton knob)
         {
             if (LastSelectedKnob && LastSelectedKnob != knob)

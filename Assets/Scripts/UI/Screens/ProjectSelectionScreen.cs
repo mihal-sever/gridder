@@ -71,7 +71,8 @@ namespace Sever.Gridder.UI
 
             void DeleteProject()
             {
-                PopUp.Instance.ShowPopUp(() =>
+                PopUp.Instance.ShowPopUp("Are you sure you want to delete the project?",
+                    () =>
                 {
                     ProjectManager.DeleteProject(project);
                     _projectButtons.Remove(projectButton);
