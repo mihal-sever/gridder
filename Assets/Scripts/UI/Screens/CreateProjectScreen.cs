@@ -39,7 +39,7 @@ namespace Sever.Gridder.UI
         private void ApplySettings()
         {
             ProjectManager.AddProject(_project);
-            EventBus.OnProjectSelected(_project);
+            EventBus.OnProjectOpened(_project);
             ScreenController.OpenScreen<EditorScreen>();
         }
 

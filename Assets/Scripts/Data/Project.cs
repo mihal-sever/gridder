@@ -6,25 +6,21 @@ namespace Sever.Gridder.Data
     public class Project
     {
         public string Guid { get; }
-        public string Name { get; private set; }
-
-        public float CanvasWidth { get; private set; }
-        public float CanvasHeight { get; private set; }
-        public int GridStep { get; private set; }
+        public string Name => Settings.name;
+        public float CanvasWidth => Settings.canvasWidth;
+        public float CanvasHeight => Settings.canvasHeight;
+        public int GridStep => Settings.gridStep;
 
         public float PixelsPerMm { get; set; }
-
+        public ProjectSettings Settings { get; private set; }
         public Sprite Image { get; private set; }
-        
         public List<KnobDto> Knobs { get; private set; }
 
         
         public Project(ProjectDto projectDto, Sprite image)
         {
             Guid = projectDto.guid;
-            Name = projectDto.name;
-            GridStep = projectDto.gridStep;
-            CanvasWidth = projectDto.canvasWidth;
+            Settings = projectDto.settings;
             Knobs = projectDto.knobs;
             Image = image;
         }
@@ -40,12 +36,9 @@ namespace Sever.Gridder.Data
             Image = image;
         }
 
-        public void UpdateSettings(string name, float canvasWidth, float canvasHeight, int gridStep)
+        public void UpdateSettings(ProjectSettings settings)
         {
-            Name = name;
-            CanvasWidth = canvasWidth;
-            CanvasHeight = canvasHeight;
-            GridStep = gridStep;
+            Settings = settings;
         }
 
         public void UpdateKnobs(List<KnobDto> knobs)

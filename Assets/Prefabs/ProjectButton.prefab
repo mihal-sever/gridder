@@ -393,6 +393,7 @@ GameObject:
   - component: {fileID: 3227425998102662980}
   - component: {fileID: 3227425998102662981}
   - component: {fileID: 5145546635497865456}
+  - component: {fileID: 8756331982178458137}
   m_Layer: 5
   m_Name: DeleteButton
   m_TagString: Untagged
@@ -441,7 +442,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.17254902, g: 0.17254902, b: 0.1764706, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -502,6 +503,22 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8756331982178458137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3227425998102662976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2648be3e243490e82431aac7a2af376, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _defaultColor: {r: 0.17254902, g: 0.17254902, b: 0.1764706, a: 1}
+  _defaultTextColor: {r: 0.17254902, g: 0.17254902, b: 0.1764706, a: 1}
+  _selectedColor: {r: 0.4, g: 1, b: 1, a: 1}
+  _selectedTextColor: {r: 0.17254902, g: 0.17254902, b: 0.1764706, a: 1}
 --- !u!1 &3227425998108575973
 GameObject:
   m_ObjectHideFlags: 0

@@ -27,19 +27,28 @@ namespace Sever.Gridder.UI
         private void OnDisable()
         {
             _image.color = _defaultColor;
-            _text.color = _defaultTextColor;
+            if (_text)
+            {
+                _text.color = _defaultTextColor;
+            }
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
             _image.color = _selectedColor;
-            _text.color = _selectedTextColor;
+            if (_text)
+            {
+                _text.color = _selectedTextColor;
+            }
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             _image.color = _defaultColor;
-            _text.color = _defaultTextColor;
+            if (_text)
+            {
+                _text.color = _defaultTextColor;
+            }
         }
     }
 }

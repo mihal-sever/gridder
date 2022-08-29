@@ -1,4 +1,6 @@
+using System;
 using System.Threading.Tasks;
+using Sever.Gridder.CommandSystem;
 using Sever.Gridder.Data;
 using Sever.Gridder.Editor;
 using UnityEngine;
@@ -31,8 +33,18 @@ namespace Sever.Gridder.UI
             _saveButton.onClick.AddListener(() => Save());
             _backButton.onClick.AddListener(CloseProject);
             
-            EventBus.ProjectSelected += OpenProject;
+            EventBus.ProjectOpened += OpenProject;
             EventBus.ProjectDeleted += Clear;
+        }
+        
+        private void OnEnable()
+        {
+            EditorHotkeyManager.Instance.enabled = true;
+        }
+        
+        private void OnDisable()
+        {
+            EditorHotkeyManager.Instance.enabled = false;
         }
 
         private void OnApplicationQuit()
@@ -42,7 +54,7 @@ namespace Sever.Gridder.UI
 
         private void OpenSettings()
         {
-            _knobController.SelectKnob(null);
+            EditorController.SelectKnob(null);
             _settingsPanel.Open();
         }
 
@@ -67,6 +79,7 @@ namespace Sever.Gridder.UI
 
         private void Clear()
         {
+            CommandsManager.ClearHistory();
             _gridController.Clear();
             _knobController.Clear();
             _project = null;
@@ -79,7 +92,7 @@ namespace Sever.Gridder.UI
             ScreenController.OpenScreen<ProjectSelectionScreen>();
         }
 
-        private async Task Save()
+        public async Task Save()
         {
             _knobController.Save();
             await DataLoader.SaveProject(_project);

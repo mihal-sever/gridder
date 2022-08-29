@@ -1,5 +1,6 @@
 using System;
 using Sever.Gridder.Data;
+using Sever.Gridder.Editor;
 using Sever.Gridder.UI;
 
 namespace Sever.Gridder
@@ -7,11 +8,12 @@ namespace Sever.Gridder
     public static class EventBus
     {
         public static event Action ProjectsLoaded;
-        public static event Action<Project> ProjectSelected;
+        public static event Action<Project> ProjectOpened;
         public static event Action ProjectDeleted;
         public static event Action<Project> ProjectCreated;
         public static event Action<Project> ProjectAdded;
-
+        public static event Action<KnobColor> ColorSelected;
+        
 
         public static void OnProjectsLoaded()
         {
@@ -19,11 +21,16 @@ namespace Sever.Gridder
             ProjectsLoaded?.Invoke();
         }
 
-        public static void OnProjectSelected(Project project)
+        public static void OnProjectOpened(Project project)
         {
-            ProjectSelected?.Invoke(project);
+            ProjectOpened?.Invoke(project);
         }
-        
+
+        public static void OnProjectClosed()
+        {
+            
+        }
+
         public static void OnProjectDeleted()
         {
             ProjectDeleted?.Invoke();
@@ -37,6 +44,11 @@ namespace Sever.Gridder
         public static void OnProjectAdded(Project project)
         {
             ProjectAdded?.Invoke(project);
+        }
+
+        public static void OnColorSelected(KnobColor color)
+        {
+            ColorSelected?.Invoke(color);
         }
     }
 }

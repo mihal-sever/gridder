@@ -14,16 +14,17 @@ namespace Sever.Gridder.Editor
         [SerializeField] private GameObject _knobPrefab;
 
         private readonly List<KnobButton> _knobs = new();
-        private KnobButton _lastSelectedKnob;
         private Project _project;
         private KnobColor _knobColor;
 
         private const float MaxKnobPanelPositionX = 1100;
 
+        public KnobButton LastSelectedKnob { get; private set; }
+        
 
         public void Init()
         {
-            _colorSelector.ColorSelected += SelectKnobColor;
+            EventBus.ColorSelected += SetKnobColor;
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -33,41 +34,44 @@ namespace Sever.Gridder.Editor
                 return;
             }
 
-            if (!eventData.hovered.Contains(_imagePanel) || _lastSelectedKnob)
+            if (!eventData.hovered.Contains(_imagePanel) || LastSelectedKnob)
             {
-                if (!_lastSelectedKnob)
+                if (!LastSelectedKnob)
                 {
                     return;
                 }
 
-                _lastSelectedKnob.SetSelected(false);
-                _lastSelectedKnob = null;
+                LastSelectedKnob.SetSelected(false);
+                LastSelectedKnob = null;
 
                 return;
             }
 
-            var knob = Instantiate(_knobPrefab, eventData.position, Quaternion.identity, _knobsParent).GetComponent<KnobButton>();
-            knob.Init(_project, _knobColor, MaxKnobPanelPositionX, SelectKnob);
-            _knobs.Add(knob);
+            Debug.LogError($"add knob");
+            EditorController.AddKnob(eventData.position);
         }
 
-        private void Update()
+        public KnobButton AddKnob(Vector3 position)
         {
-            if (!_lastSelectedKnob)
-            {
-                return;
-            }
-
-            if (Input.GetKeyUp(KeyCode.Backspace))
-            {
-                DeleteKnob(_lastSelectedKnob);
-                return;
-            }
-
-            if (Input.GetKeyUp(KeyCode.F))
-            {
-                _lastSelectedKnob.ToggleFinished();
-            }
+            Debug.LogError($"add knob {_knobColor}");
+            var knob = Instantiate(_knobPrefab, position, Quaternion.identity, _knobsParent).GetComponent<KnobButton>();
+            knob.Init(_project, _knobColor, MaxKnobPanelPositionX, EditorController.SelectKnob);
+            _knobs.Add(knob);
+            return knob;
+        }
+        
+        public void AddKnob(KnobDto knobDto)
+        {
+            var knob = Instantiate(_knobPrefab, _knobsParent).GetComponent<KnobButton>();
+            knob.Init(_project, knobDto, MaxKnobPanelPositionX, EditorController.SelectKnob);
+            _knobs.Add(knob);
+        }
+        
+        public void DeleteKnob(KnobButton knob)
+        {
+            LastSelectedKnob = null;
+            _knobs.Remove(knob);
+            Destroy(knob.gameObject);
         }
 
         public void Save()
@@ -78,7 +82,7 @@ namespace Sever.Gridder.Editor
         public void Clear()
         {
             _project = null;
-            _lastSelectedKnob = null;
+            LastSelectedKnob = null;
             foreach (KnobButton knob in _knobs)
             {
                 Destroy(knob.gameObject);
@@ -103,41 +107,32 @@ namespace Sever.Gridder.Editor
 
             foreach (KnobDto knobDto in _project.Knobs)
             {
-                var knob = Instantiate(_knobPrefab, _knobsParent).GetComponent<KnobButton>();
-                knob.Init(_project, knobDto, MaxKnobPanelPositionX, SelectKnob);
-                _knobs.Add(knob);
+                AddKnob(knobDto);
             }
         }
-
+        
         public void SelectKnob(KnobButton knob)
         {
-            if (_lastSelectedKnob && _lastSelectedKnob != knob)
+            if (LastSelectedKnob && LastSelectedKnob != knob)
             {
-                _lastSelectedKnob.SetSelected(false);
+                LastSelectedKnob.SetSelected(false);
             }
 
-            _lastSelectedKnob = knob;
+            LastSelectedKnob = knob;
 
-            if (_lastSelectedKnob)
+            if (LastSelectedKnob)
             {
-                _lastSelectedKnob.transform.SetAsLastSibling();
+                LastSelectedKnob.transform.SetAsLastSibling();
             }
         }
 
-        private void DeleteKnob(KnobButton knob)
-        {
-            _lastSelectedKnob = null;
-            _knobs.Remove(knob);
-            Destroy(knob.gameObject);
-        }
-
-        private void SelectKnobColor(KnobColor color)
+        private void SetKnobColor(KnobColor color)
         {
             _knobColor = color;
 
-            if (_lastSelectedKnob)
+            if (LastSelectedKnob)
             {
-                _lastSelectedKnob.SetColor(color);
+                LastSelectedKnob.Color = color;
             }
         }
     }

@@ -7,9 +7,7 @@ namespace Sever.Gridder.Data
     public class ProjectDto
     {
         public string guid;
-        public string name;
-        public int gridStep;
-        public float canvasWidth;
+        public ProjectSettings settings;
         public List<KnobDto> knobs;
     }
 }

@@ -14,17 +14,32 @@ namespace Sever.Gridder.Editor
         [SerializeField] private Sprite _selectedSprite;
         [SerializeField] private Sprite _finishedSprite;
 
+        private Action<KnobButton> _onSelected;
+        
         private Button _button;
         private Button Button => _button ??= GetComponent<Button>();
 
         private RectTransform _rectTransform;
         private RectTransform RectTransform => _rectTransform ??= GetComponent<RectTransform>();
 
-        private Action<KnobButton> _onSelected;
         private KnobColor _color;
+        public KnobColor Color
+        {
+            get => _color;
+            set
+            {
+                if (_color == value)
+                {
+                    return;
+                }
+                
+                _color = value;
+                _defaultSprite = KnobColorSelector.GetSprite(_color);
+                UpdateSprite();
+            }
+        }
 
         private bool _isFinished;
-
         private bool IsFinished
         {
             get => _isFinished;
@@ -41,7 +56,6 @@ namespace Sever.Gridder.Editor
         }
 
         private bool _isSelected;
-
         private bool IsSelected
         {
             get => _isSelected;
@@ -68,7 +82,7 @@ namespace Sever.Gridder.Editor
         public void Init(Project project, KnobColor color, float maxPositionX, Action<KnobButton> onSelected)
         {
             Init();
-            SetColor(color);
+            Color = color;
             _onSelected = onSelected;
 
             _infoPanel.Init(project, RectTransform.anchoredPosition.Abs(), maxPositionX);
@@ -79,13 +93,6 @@ namespace Sever.Gridder.Editor
             IsFinished = knobDto.isFinished;
             RectTransform.anchoredPosition = new Vector2(knobDto.x, knobDto.y);
             Init(project, knobDto.color, maxPositionX, onSelected);
-        }
-
-        public void SetColor(KnobColor color)
-        {
-            _color = color;
-            _defaultSprite = KnobColorSelector.GetSprite(_color);
-            UpdateSprite();
         }
 
         public void SetSelected(bool isSelected)

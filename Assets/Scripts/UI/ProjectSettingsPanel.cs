@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using Sever.Gridder.Data;
+using Sever.Gridder.Editor;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -40,6 +41,7 @@ namespace Sever.Gridder.UI
 
             _projectNameInput.onEndEdit.AddListener(OnEndEditName);
             _canvasWidthInput.onEndEdit.AddListener(OnEndEditCanvasWidth);
+            _canvasHeightInput.onEndEdit.AddListener(OnEndEditCanvasHeight);
             _gridStepInput.onEndEdit.AddListener(OnEndEditGridStep);
 
             _apply.onClick.AddListener(Apply);
@@ -56,8 +58,8 @@ namespace Sever.Gridder.UI
             _gridStep = _project.GridStep;
 
             _projectNameInput.text = _name;
-            _canvasWidthInput.text = _canvasWidth.Value.ToString(CultureInfo.InvariantCulture);
-            _canvasHeightInput.text = _canvasHeight.Value.ToString(CultureInfo.InvariantCulture);
+            _canvasWidthInput.text = Mathf.RoundToInt(_canvasWidth.Value).ToString(CultureInfo.InvariantCulture);
+            _canvasHeightInput.text = Mathf.RoundToInt(_canvasHeight.Value).ToString(CultureInfo.InvariantCulture);
             _gridStepInput.text = _gridStep.Value.ToString(CultureInfo.InvariantCulture);
             
             ValidateInput();
@@ -101,19 +103,35 @@ namespace Sever.Gridder.UI
             float result;
             if (!float.TryParse(value, out result))
             {
-                _canvasWidth = null;
-                _canvasHeight = null;
-                _canvasWidthInput.text = null;
-                _canvasHeightInput.text = null;
+                ResetCanvasSize();
                 return;
             }
 
-            _canvasWidth = Mathf.Clamp(result, 50, 5000);
-            _canvasWidthInput.text = _canvasWidth.Value.ToString(CultureInfo.InvariantCulture);
+            _canvasWidth = Mathf.Clamp(result, 50, float.MaxValue);
+            _canvasWidthInput.text = Mathf.RoundToInt(_canvasWidth.Value).ToString(CultureInfo.InvariantCulture);
 
             var pixelsPerMm = _project.Image.rect.size.x / _canvasWidth.Value;
             _canvasHeight = _project.Image.rect.size.y / pixelsPerMm;
             _canvasHeightInput.text = Mathf.RoundToInt(_canvasHeight.Value).ToString(CultureInfo.InvariantCulture);
+
+            ValidateInput();
+        }
+
+        private void OnEndEditCanvasHeight(string value)
+        {
+            float result;
+            if (!float.TryParse(value, out result))
+            {
+                ResetCanvasSize();
+                return;
+            }
+
+            _canvasHeight = Mathf.Clamp(result, 50, float.MaxValue);
+            _canvasHeightInput.text = Mathf.RoundToInt(_canvasHeight.Value).ToString(CultureInfo.InvariantCulture);
+
+            var pixelsPerMm = _project.Image.rect.size.y / _canvasHeight.Value;
+            _canvasWidth = _project.Image.rect.size.x / pixelsPerMm;
+            _canvasWidthInput.text = Mathf.RoundToInt(_canvasWidth.Value).ToString(CultureInfo.InvariantCulture);
 
             ValidateInput();
         }
@@ -128,7 +146,7 @@ namespace Sever.Gridder.UI
                 return;
             }
 
-            _gridStep = Mathf.Clamp(result, 10, 100);
+            _gridStep = Mathf.Clamp(result, 10, Int32.MaxValue);
             _gridStepInput.text = _gridStep.Value.ToString(CultureInfo.InvariantCulture);
 
             ValidateInput();
@@ -140,14 +158,29 @@ namespace Sever.Gridder.UI
             {
                 _sliderScreen.Close();
             }
-            
-            _project.UpdateSettings(_name, _canvasWidth.Value, _canvasHeight.Value, _gridStep.Value);
-            _onApplied?.Invoke();
+
+            var settings = new ProjectSettings()
+            {
+                name = _name,
+                canvasWidth = _canvasWidth.Value,
+                canvasHeight = _canvasHeight.Value,
+                gridStep = _gridStep.Value
+            };
+
+            EditorController.ChangeSettings(_project, settings, _onApplied);
         }
 
         private void ValidateInput()
         {
             _apply.interactable = _name != null && _canvasWidth is > 0 && _gridStep is > 0;
+        }
+        
+        private void ResetCanvasSize()
+        {
+            _canvasWidth = null;
+            _canvasHeight = null;
+            _canvasWidthInput.text = null;
+            _canvasHeightInput.text = null;
         }
     }
 }

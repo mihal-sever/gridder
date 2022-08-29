@@ -54,9 +54,7 @@ namespace Sever.Gridder
             var projectDto = new ProjectDto
             {
                 guid = project.Guid,
-                name = project.Name,
-                gridStep = project.GridStep,
-                canvasWidth = project.CanvasWidth,
+                settings = project.Settings,
                 knobs = project.Knobs
             };
 
@@ -84,7 +82,7 @@ namespace Sever.Gridder
             }
 
             var json = await File.ReadAllTextAsync(dataPath);
-            var projectDto = JsonUtility.FromJson<ProjectDto>(json);
+            var projectDto = JsonConvert.DeserializeObject<ProjectDto>(json);
             var imagePath = GetImagePath(projectGuid);
             var sprite = await LoadSpriteFromDisk(imagePath, false);
             var project = new Project(projectDto, sprite);

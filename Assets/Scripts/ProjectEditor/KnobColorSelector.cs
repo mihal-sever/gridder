@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Sever.Gridder.Editor
@@ -12,28 +10,38 @@ namespace Sever.Gridder.Editor
         Pink,
         Yellow
     }
-    
+
     public class KnobColorSelector : MonoBehaviour, IInitializable
     {
-        public event Action<KnobColor> ColorSelected;
-
-        public static readonly Dictionary<KnobColor, Sprite> KnobColors = new();
+        private static readonly Dictionary<KnobColor, Sprite> _knobColors = new();
         private List<KnobColorButton> _buttons;
+        private KnobColor _color;
 
 
         public void Init()
         {
             _buttons = GetComponentsInChildren<KnobColorButton>(true).ToList();
-            _buttons.ForEach(x => x.Init(() => ColorSelected?.Invoke(x.Color)));
+            _buttons.ForEach(x => x.Init(() => SelectColor(x.Color)));
 
             foreach (var button in _buttons)
             {
-                KnobColors.Add(button.Color, button.Sprite);
+                _knobColors.Add(button.Color, button.Sprite);
             }
-            
-            ColorSelected?.Invoke(KnobColor.Cyan);
+
+            SelectColor(KnobColor.Cyan);
         }
 
-        public static Sprite GetSprite(KnobColor color) => KnobColors[color];
+        public static Sprite GetSprite(KnobColor color) => _knobColors[color];
+
+        private void SelectColor(KnobColor color)
+        {
+            if (_color == color)
+            {
+                return;
+            }
+
+            EditorController.SetKnobColor(color, _color);
+            _color = color;
+        }
     }
 }

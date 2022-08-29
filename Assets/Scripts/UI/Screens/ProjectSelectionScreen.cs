@@ -65,7 +65,7 @@ namespace Sever.Gridder.UI
 
             void SelectProject()
             {
-                EventBus.OnProjectSelected(project);
+                EventBus.OnProjectOpened(project);
                 ScreenController.OpenScreen<EditorScreen>();
             }
 
