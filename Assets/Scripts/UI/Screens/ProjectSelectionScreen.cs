@@ -20,8 +20,9 @@ namespace Sever.Gridder.UI
         {
             _paginationController.Init();
             _paginationController.AddLastItem<Button>(_createProjectButtonPrefab).onClick.AddListener(() => CreateProject());
+
             EventBus.ProjectsLoaded += OnProjectsLoaded;
-            EventBus.ProjectAdded += project => AddProject(project, true);
+            EventBus.ProjectAdded += project => AddProject(project);
             EventBus.ProjectClosed += OnProjectClosed;
         }
 

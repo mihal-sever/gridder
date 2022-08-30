@@ -13,6 +13,9 @@ namespace Sever.Gridder.UI
         [SerializeField] private int _maxItemsPerPage = 6;
         [SerializeField] private GameObject _pagePrefab;
 
+        [Space, SerializeField] private Button _openPreviousPage;
+        [SerializeField] private Button _openNextPage;
+
         private readonly List<Page> _pages = new();
 
         private RectTransform _rectTransform;
@@ -25,7 +28,10 @@ namespace Sever.Gridder.UI
         {
             _rectTransform = GetComponent<RectTransform>();
             _swipeOffset = GetComponent<HorizontalLayoutGroup>().spacing + _rectTransform.rect.size.x;
-            
+
+            _openPreviousPage.onClick.AddListener(OpenPrevious);
+            _openNextPage.onClick.AddListener(OpenNext);
+
             _lastPage = AddPage();
         }
 
@@ -38,7 +44,7 @@ namespace Sever.Gridder.UI
         {
             _openedPageIndex = 0;
             _rectTransform?.Move(_rectTransform.anchoredPosition, new Vector2(-_openedPageIndex * _swipeOffset, 0));
-            
+
             SwipeManager.OnSwipeDetected -= OnSwipeDetected;
         }
 
@@ -48,14 +54,14 @@ namespace Sever.Gridder.UI
             {
                 ShiftItemsRight();
             }
-            
+
             var createProjectItem = _pages[0].PopFirst();
             var item = _pages[0].AddFirst(itemPrefab);
             _pages[0].PushFirst(createProjectItem);
 
             return item.GetComponent<T>();
         }
-        
+
         public T AddLastItem<T>(GameObject itemPrefab) where T : MonoBehaviour
         {
             if (_lastPage.IsFinished)
@@ -74,7 +80,7 @@ namespace Sever.Gridder.UI
             {
                 ShiftItemsRight();
             }
-            
+
             var createProjectItem = _pages[0].PopFirst();
             _pages[0].PushFirst(item);
             _pages[0].PushFirst(createProjectItem);
@@ -82,28 +88,33 @@ namespace Sever.Gridder.UI
 
         public void DeleteItem(RectTransform item)
         {
-            var index = _pages.FindIndex(x => x.Contains(item));
+            var index = _openedPageIndex;
             _pages[index].DeleteItem(item);
 
-            if (index == _pages.Count - 1)
+            if (index < _pages.Count - 1)
             {
-                return;
+                foreach (var page in _pages.Skip(index + 1)) // move first page item to the previous page
+                {
+                    _pages[index].PushLast(page.PopFirst());
+                    index++;
+                }
             }
-
-            foreach (var page in _pages.Skip(index + 1)) // move first page item to the previous page
-            {
-                _pages[index].PushLast(page.PopFirst());
-                index++;
-            }
-
+            
             if (!_lastPage.IsEmpty)
             {
                 return;
             }
 
+            if (_openedPageIndex == _pages.Count - 1)
+            {
+                _openedPageIndex--;
+                SwipePage();
+            }
+
             _pages.Remove(_lastPage);
             Destroy(_lastPage.gameObject);
             _lastPage = _pages.Last();
+            UpdateOpenPageButtons();
         }
 
         private void ShiftItemsRight()
@@ -112,7 +123,7 @@ namespace Sever.Gridder.UI
             {
                 _lastPage = AddPage();
             }
-                
+
             var index = 0;
             foreach (var page in _pages.Skip(1))
             {
@@ -132,12 +143,12 @@ namespace Sever.Gridder.UI
             {
                 case Swipe.Left:
                 {
-                    SwipeLeft();
+                    OpenNext();
                     break;
                 }
                 case Swipe.Right:
                 {
-                    SwipeRight();
+                    OpenPrevious();
                     break;
                 }
             }
@@ -148,10 +159,11 @@ namespace Sever.Gridder.UI
             var page = Instantiate(_pagePrefab, transform).GetComponent<Page>();
             page.Init(_maxItemsPerPage);
             _pages.Add(page);
+            UpdateOpenPageButtons();
             return page;
         }
 
-        private void SwipeRight()
+        private void OpenPrevious()
         {
             if (_openedPageIndex == 0)
             {
@@ -162,7 +174,7 @@ namespace Sever.Gridder.UI
             SwipePage();
         }
 
-        private void SwipeLeft()
+        private void OpenNext()
         {
             if (_openedPageIndex == _pages.Count - 1)
             {
@@ -177,6 +189,14 @@ namespace Sever.Gridder.UI
         {
             _rectTransform.Move(_rectTransform.anchoredPosition, new Vector2(-_openedPageIndex * _swipeOffset, 0), _moveDuration,
                 LeanTweenType.easeInOutCubic);
+            
+            UpdateOpenPageButtons();
+        }
+
+        private void UpdateOpenPageButtons()
+        {
+            _openPreviousPage.gameObject.SetActive(_openedPageIndex > 0);
+            _openNextPage.gameObject.SetActive(_openedPageIndex < _pages.Count - 1);
         }
     }
 }
