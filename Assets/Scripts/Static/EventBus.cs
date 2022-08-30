@@ -9,6 +9,7 @@ namespace Sever.Gridder
     {
         public static event Action ProjectsLoaded;
         public static event Action<Project> ProjectOpened;
+        public static event Action<Project> ProjectClosed;
         public static event Action ProjectDeleted;
         public static event Action<Project> ProjectCreated;
         public static event Action<Project> ProjectAdded;
@@ -25,10 +26,10 @@ namespace Sever.Gridder
         {
             ProjectOpened?.Invoke(project);
         }
-
-        public static void OnProjectClosed()
+        
+        public static void OnProjectClosed(Project project)
         {
-            
+            ProjectClosed?.Invoke(project);
         }
 
         public static void OnProjectDeleted()

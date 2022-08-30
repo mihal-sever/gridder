@@ -9,8 +9,6 @@ namespace Sever.Gridder.UI
     {
         private int _maxItems;
         private readonly List<RectTransform> _items = new();
-
-        private RectTransform _rectTransform;
         
         public bool IsFinished => _items.Count == _maxItems;
         public bool IsEmpty => _items.Count == 0;
@@ -18,7 +16,6 @@ namespace Sever.Gridder.UI
         
         public void Init(int maxItems)
         {
-            _rectTransform = GetComponent<RectTransform>();
             _maxItems = maxItems;
         }
 
@@ -27,10 +24,17 @@ namespace Sever.Gridder.UI
             return _items.Contains(item);
         }
         
-        public RectTransform AddItem(GameObject itemPrefab)
+        public RectTransform AddFirst(GameObject itemPrefab)
         {
             var item = Instantiate(itemPrefab, transform).GetComponent<RectTransform>();
-            _items.Add(item);
+            PushFirst(item);
+            return item;
+        }
+        
+        public RectTransform AddLast(GameObject itemPrefab)
+        {
+            var item = Instantiate(itemPrefab, transform).GetComponent<RectTransform>();
+            PushLast(item);
             return item;
         }
         
@@ -40,18 +44,39 @@ namespace Sever.Gridder.UI
             _items.Remove(item);
         }
 
-        public RectTransform Pop()
+        public RectTransform PopFirst()
         {
             var item = _items.First();
             _items.Remove(item);
             return item;
         }
-
-        public void Push(RectTransform item)
+        
+        public RectTransform PopLast()
         {
-            var anchoredPosition = item.anchoredPosition;
-            item.parent = _rectTransform;
-            item.anchoredPosition = anchoredPosition;
+            var item = _items.Last();
+            _items.Remove(item);
+            return item;
+        }
+        
+        public void PushFirst(RectTransform item)
+        {
+            item.parent = transform;
+            item.SetAsFirstSibling();
+            if (Contains(item))
+            {
+                return;
+            }
+            _items.Insert(0, item);
+        }
+        
+        public void PushLast(RectTransform item)
+        {
+            item.parent = transform;
+            item.SetAsLastSibling();
+            if (Contains(item))
+            {
+                return;
+            }
             _items.Add(item);
         }
     }

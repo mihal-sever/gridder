@@ -13,15 +13,16 @@ namespace Sever.Gridder.UI
         [SerializeField] private GameObject _projectButtonPrefab;
         [SerializeField] private GameObject _createProjectButtonPrefab;
 
-        private readonly HashSet<ProjectButton> _projectButtons = new();
+        private readonly Dictionary<Project, ProjectButton> _projectButtons = new();
 
 
         public void Init()
         {
             _paginationController.Init();
-            _paginationController.AddItem<Button>(_createProjectButtonPrefab).onClick.AddListener(() => CreateProject());
+            _paginationController.AddLastItem<Button>(_createProjectButtonPrefab).onClick.AddListener(() => CreateProject());
             EventBus.ProjectsLoaded += OnProjectsLoaded;
-            EventBus.ProjectAdded += AddProject;
+            EventBus.ProjectAdded += project => AddProject(project, true);
+            EventBus.ProjectClosed += OnProjectClosed;
         }
 
         private void OnProjectsLoaded()
@@ -33,7 +34,7 @@ namespace Sever.Gridder.UI
         {
             foreach (Project project in projects)
             {
-                AddProject(project);
+                AddProject(project, false);
             }
         }
 
@@ -57,11 +58,14 @@ namespace Sever.Gridder.UI
             }
         }
 
-        private void AddProject(Project project)
+        private void AddProject(Project project, bool addFirst = true)
         {
-            var projectButton = _paginationController.AddItem<ProjectButton>(_projectButtonPrefab);
+            var projectButton = addFirst
+                ? _paginationController.AddFirstItem<ProjectButton>(_projectButtonPrefab)
+                : _paginationController.AddLastItem<ProjectButton>(_projectButtonPrefab);
+            
             projectButton.Init(project, SelectProject, DeleteProject);
-            _projectButtons.Add(projectButton);
+            _projectButtons.Add(project, projectButton);
 
             void SelectProject()
             {
@@ -75,10 +79,19 @@ namespace Sever.Gridder.UI
                     () =>
                 {
                     ProjectManager.DeleteProject(project);
-                    _projectButtons.Remove(projectButton);
+                    _projectButtons.Remove(project);
                     _paginationController.DeleteItem(projectButton.RectTransform);
                 });
             }
+        }
+
+        private void OnProjectClosed(Project project)
+        {
+            _paginationController.SetAsFirstItem(_projectButtons[project].RectTransform);
+            // _projectButtons.Remove(project);
+            // _paginationController.DeleteItem(_projectButtons[project].RectTransform);
+            //
+            // AddProject(project, true);
         }
     }
 }

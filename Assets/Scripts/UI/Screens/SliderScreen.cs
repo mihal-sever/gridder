@@ -22,32 +22,15 @@ namespace Sever.Gridder.UI
 
         private RectTransform _rectTransform;
         private RectTransform RectTransform => _rectTransform ??= GetComponentInChildren<RectTransform>(true);
-
-        private Vector2 _referenceResolution;
-
-        private Vector2 ReferenceResolution
-        {
-            get
-            {
-                if (_referenceResolution == Vector2.zero)
-                {
-                    var canvasScaler = GetComponent<CanvasScaler>() ? GetComponent<CanvasScaler>() : GetComponentInParent<CanvasScaler>();
-                    _referenceResolution = canvasScaler.referenceResolution;
-                }
-
-                return _referenceResolution;
-            }
-        }
-
+        
         private Vector2 _offset;
-
         private Vector2 Offset
         {
             get
             {
                 if (_offset == Vector2.zero)
                 {
-                    _offset = new Vector2(RectTransform.rect.size.x, 0); //new Vector2(ReferenceResolution.x, 0);
+                    _offset = new Vector2(RectTransform.rect.size.x, 0);
                 }
 
                 return _offset;
@@ -66,7 +49,7 @@ namespace Sever.Gridder.UI
             _fromPosition = GetPosition(from);
             _toPosition = GetPosition(to);
 
-            RectTransform.Move(RectTransform.anchoredPosition, _fromPosition, 0);
+            RectTransform.Move(RectTransform.anchoredPosition, _fromPosition);
             gameObject.SetActive(false);
         }
 
@@ -89,7 +72,7 @@ namespace Sever.Gridder.UI
             RectTransform.Move(RectTransform.anchoredPosition, _toPosition, duration, LeanTweenType.notUsed,
                 () =>
                 {
-                    RectTransform.Move(RectTransform.anchoredPosition, _fromPosition, 0);
+                    RectTransform.Move(RectTransform.anchoredPosition, _fromPosition);
                     gameObject.SetActive(false);
                     callback?.Invoke();
                 },

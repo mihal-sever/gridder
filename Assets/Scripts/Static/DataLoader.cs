@@ -60,6 +60,9 @@ namespace Sever.Gridder
             
             var json = JsonConvert.SerializeObject(projectDto, Formatting.Indented);
             await File.WriteAllTextAsync(GetDataPath(project.Guid), json);
+            
+            var projectDirectory = GetProjectDirectory(project.Guid);
+            Directory.SetLastWriteTime(projectDirectory, DateTime.Now);
         }
 
         public static void DeleteProject(Project project)
@@ -108,7 +111,7 @@ namespace Sever.Gridder
                     ScreenController.OpenScreen<ProgressBar>();
                 }
                 
-                foreach (string directory in directories)
+                foreach (string directory in directories.OrderByDescending(Directory.GetLastWriteTime))
                 {
                     var projectGuid = directory.Split('/').Last();
                     var project = await LoadProject(projectGuid);

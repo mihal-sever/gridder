@@ -97,6 +97,7 @@ namespace Sever.Gridder.UI
         {
             Save();
             _settingsPanel.Close();
+            EventBus.OnProjectClosed(_project);
             ScreenController.OpenScreen<ProjectSelectionScreen>();
         }
 
