@@ -7,9 +7,9 @@ namespace Sever.Gridder.UI
     public class CreateProjectScreen : BaseScreen, IInitializable
     {
         [SerializeField] private Button _closeButton;
-        [SerializeField] private Image _previewImage;
-        [SerializeField] private Button _changeImageButton;
         [SerializeField] private ProjectSettingsPanel _settingsPanel;
+        [SerializeField] private Image _previewImage;
+        [SerializeField] private Button[] _changeImageButtons;
 
         private Sprite _sprite;
         private Project _project;
@@ -20,8 +20,12 @@ namespace Sever.Gridder.UI
             _previewImage.preserveAspect = true;
             _previewImage.type = Image.Type.Simple;
 
-            _closeButton.onClick.AddListener(ScreenController.OpenScreen<ProjectSelectionScreen>);
-            _changeImageButton.onClick.AddListener(ChooseImage);
+            _closeButton.onClick.AddListener(() => ScreenController.OpenScreen<ProjectSelectionScreen>());
+
+            foreach (var changeImageButton in _changeImageButtons)
+            {
+                changeImageButton.onClick.AddListener(ChooseImage);
+            }
             
             EventBus.ProjectCreated += OnProjectCreated;
         }
