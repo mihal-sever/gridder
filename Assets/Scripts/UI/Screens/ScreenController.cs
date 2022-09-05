@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Sever.Gridder.UI
@@ -7,10 +9,10 @@ namespace Sever.Gridder.UI
     public class ScreenController : MonoBehaviour, IInitializable
     {
         [SerializeField] private float _screenAnimationDuration = .5f;
-        
+
         private static List<BaseScreen> _screens;
         private static BaseScreen _currentScreen;
-        
+
 
         public void Init()
         {
@@ -23,12 +25,14 @@ namespace Sever.Gridder.UI
             }
         }
 
-        public static void OpenScreen<T>() where T : BaseScreen
+        public static async Task OpenScreen<T>(float delay = 0) where T : BaseScreen
         {
             if (_currentScreen && _currentScreen.GetType() == typeof(T))
             {
                 return;
             }
+
+            await Task.Delay(TimeSpan.FromSeconds(delay));
 
             if (_currentScreen)
             {

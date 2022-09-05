@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Sever.Gridder.Data;
@@ -7,7 +6,7 @@ namespace Sever.Gridder
 {
     public static class ProjectManager
     {
-        public static HashSet<Project> Projects { get; } = new ();
+        public static HashSet<Project> Projects { get; } = new();
 
 
         public static void SetProjects(List<Project> projects)
@@ -22,7 +21,7 @@ namespace Sever.Gridder
             {
                 return;
             }
-            
+
             EventBus.OnProjectsLoaded();
         }
 

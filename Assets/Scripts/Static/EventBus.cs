@@ -18,7 +18,7 @@ namespace Sever.Gridder
 
         public static void OnProjectsLoaded()
         {
-            ScreenController.OpenScreen<ProjectSelectionScreen>();
+            ScreenController.OpenScreen<ProjectSelectionScreen>(.5f);
             ProjectsLoaded?.Invoke();
         }
 

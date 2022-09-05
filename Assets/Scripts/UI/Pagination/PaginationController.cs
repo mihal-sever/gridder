@@ -44,7 +44,8 @@ namespace Sever.Gridder.UI
         {
             _openedPageIndex = 0;
             _rectTransform?.Move(_rectTransform.anchoredPosition, new Vector2(-_openedPageIndex * _swipeOffset, 0));
-
+            UpdateOpenPageButtons();
+            
             SwipeManager.OnSwipeDetected -= OnSwipeDetected;
         }
 
