@@ -26,7 +26,7 @@ After transfering the point to the canvas press **ctrl+f** to mark it as finishe
 
 ## Hotkeys
 
-- **ctrl+s** - save project
-- **ctrl+d** - delete selected point
-- **ctrl+f** - mark point as finished/unfinished
-- **ctrl+z** - undo last command
+- **ctrl/cmd+s** - save project
+- **ctrl/cmd+d** - delete selected point
+- **ctrl/cmd+f** - mark point as finished/unfinished
+- **ctrl/cmd+z** - undo last command
