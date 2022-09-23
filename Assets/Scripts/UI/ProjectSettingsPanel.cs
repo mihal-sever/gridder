@@ -21,8 +21,8 @@ namespace Sever.Gridder.UI
         private Action _onApplied;
         private Project _project;
         private string _name;
-        private float? _canvasWidth;
-        private float? _canvasHeight;
+        private int? _canvasWidth;
+        private int? _canvasHeight;
         private int? _gridStep;
 
 
@@ -47,6 +47,19 @@ namespace Sever.Gridder.UI
             _apply.onClick.AddListener(Apply);
         }
 
+        private void OnEnable()
+        {
+            _projectNameInput.ActivateInputField();
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyUp(KeyCode.Tab))
+            {
+                _canvasWidthInput.ActivateInputField();
+            }
+        }
+
         public void SetProject(Project project, Action onApplied)
         {
             _project = project;
@@ -58,10 +71,10 @@ namespace Sever.Gridder.UI
             _gridStep = _project.GridStep;
 
             _projectNameInput.text = _name;
-            _canvasWidthInput.text = Mathf.RoundToInt(_canvasWidth.Value).ToString(CultureInfo.InvariantCulture);
-            _canvasHeightInput.text = Mathf.RoundToInt(_canvasHeight.Value).ToString(CultureInfo.InvariantCulture);
-            _gridStepInput.text = _gridStep.Value.ToString(CultureInfo.InvariantCulture);
-            
+            _canvasWidthInput.text = _canvasWidth.Value > 0 ? _canvasWidth.Value.ToString(CultureInfo.InvariantCulture) : null;
+            _canvasHeightInput.text = _canvasHeight.Value > 0 ? _canvasHeight.Value.ToString(CultureInfo.InvariantCulture) : null;
+            _gridStepInput.text = _gridStep.Value > 0 ? _gridStep.Value.ToString(CultureInfo.InvariantCulture) : null;
+
             ValidateInput();
         }
 
@@ -80,16 +93,16 @@ namespace Sever.Gridder.UI
                 _sliderScreen.Close();
             }
         }
-        
-        public void UpdateCanvasSize(float width, float height)
+
+        public void UpdateCanvasSize(int width, int height)
         {
             if (_canvasWidth is not > 0)
             {
                 return;
             }
-            
-            _canvasHeight = height /  width * _canvasWidth.Value;
-            _canvasHeightInput.text = Mathf.RoundToInt(_canvasHeight.Value).ToString(CultureInfo.InvariantCulture);
+
+            _canvasHeight = height / width * _canvasWidth.Value;
+            _canvasHeightInput.text = _canvasHeight.Value.ToString(CultureInfo.InvariantCulture);
         }
 
         private void OnEndEditName(string value)
@@ -100,38 +113,38 @@ namespace Sever.Gridder.UI
 
         private void OnEndEditCanvasWidth(string value)
         {
-            float result;
-            if (!float.TryParse(value, out result))
+            int result;
+            if (!int.TryParse(value, out result))
             {
                 ResetCanvasSize();
                 return;
             }
 
-            _canvasWidth = Mathf.Clamp(result, 50, float.MaxValue);
-            _canvasWidthInput.text = Mathf.RoundToInt(_canvasWidth.Value).ToString(CultureInfo.InvariantCulture);
+            _canvasWidth = Mathf.Clamp(result, 50, int.MaxValue);
+            _canvasWidthInput.text = _canvasWidth.Value.ToString(CultureInfo.InvariantCulture);
 
             var pixelsPerMm = _project.Image.rect.size.x / _canvasWidth.Value;
-            _canvasHeight = _project.Image.rect.size.y / pixelsPerMm;
-            _canvasHeightInput.text = Mathf.RoundToInt(_canvasHeight.Value).ToString(CultureInfo.InvariantCulture);
+            _canvasHeight = Mathf.RoundToInt(_project.Image.rect.size.y / pixelsPerMm);
+            _canvasHeightInput.text = _canvasHeight.Value.ToString(CultureInfo.InvariantCulture);
 
             ValidateInput();
         }
 
         private void OnEndEditCanvasHeight(string value)
         {
-            float result;
-            if (!float.TryParse(value, out result))
+            int result;
+            if (!int.TryParse(value, out result))
             {
                 ResetCanvasSize();
                 return;
             }
 
-            _canvasHeight = Mathf.Clamp(result, 50, float.MaxValue);
-            _canvasHeightInput.text = Mathf.RoundToInt(_canvasHeight.Value).ToString(CultureInfo.InvariantCulture);
+            _canvasHeight = Mathf.Clamp(result, 50, int.MaxValue);
+            _canvasHeightInput.text = _canvasHeight.Value.ToString(CultureInfo.InvariantCulture);
 
             var pixelsPerMm = _project.Image.rect.size.y / _canvasHeight.Value;
-            _canvasWidth = _project.Image.rect.size.x / pixelsPerMm;
-            _canvasWidthInput.text = Mathf.RoundToInt(_canvasWidth.Value).ToString(CultureInfo.InvariantCulture);
+            _canvasWidth = Mathf.RoundToInt(_project.Image.rect.size.x / pixelsPerMm);
+            _canvasWidthInput.text = _canvasWidth.Value.ToString(CultureInfo.InvariantCulture);
 
             ValidateInput();
         }
@@ -146,7 +159,7 @@ namespace Sever.Gridder.UI
                 return;
             }
 
-            _gridStep = Mathf.Clamp(result, 10, Int32.MaxValue);
+            _gridStep = Mathf.Clamp(result, 10, int.MaxValue);
             _gridStepInput.text = _gridStep.Value.ToString(CultureInfo.InvariantCulture);
 
             ValidateInput();
@@ -174,7 +187,7 @@ namespace Sever.Gridder.UI
         {
             _apply.interactable = _name != null && _canvasWidth is > 0 && _gridStep is > 0;
         }
-        
+
         private void ResetCanvasSize()
         {
             _canvasWidth = null;

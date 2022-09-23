@@ -661,8 +661,8 @@ MonoBehaviour:
   m_CaretWidth: 1
   m_ReadOnly: 0
   m_RichText: 1
-  m_GlobalFontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_OnFocusSelectAll: 1
+  m_GlobalFontAsset: {fileID: 11400000, guid: 8150b19d8e7b24654bc400ad9d9586f4, type: 2}
+  m_OnFocusSelectAll: 0
   m_ResetOnDeActivation: 1
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 0
@@ -1150,8 +1150,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 70, y: -465}
-  m_SizeDelta: {x: 300, y: 610}
+  m_AnchoredPosition: {x: 70, y: -464.93906}
+  m_SizeDelta: {x: 300, y: 609.8781}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &151467633
 CanvasRenderer:
@@ -2644,8 +2644,8 @@ MonoBehaviour:
   m_CaretWidth: 1
   m_ReadOnly: 0
   m_RichText: 1
-  m_GlobalFontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_OnFocusSelectAll: 1
+  m_GlobalFontAsset: {fileID: 11400000, guid: 8150b19d8e7b24654bc400ad9d9586f4, type: 2}
+  m_OnFocusSelectAll: 0
   m_ResetOnDeActivation: 1
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 0
@@ -2790,8 +2790,8 @@ MonoBehaviour:
   m_CaretWidth: 1
   m_ReadOnly: 0
   m_RichText: 1
-  m_GlobalFontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_OnFocusSelectAll: 1
+  m_GlobalFontAsset: {fileID: 11400000, guid: 8150b19d8e7b24654bc400ad9d9586f4, type: 2}
+  m_OnFocusSelectAll: 0
   m_ResetOnDeActivation: 1
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 0
@@ -3344,8 +3344,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 940, y: -465}
-  m_SizeDelta: {x: 860, y: 610}
+  m_AnchoredPosition: {x: 940, y: -464.93906}
+  m_SizeDelta: {x: 860, y: 609.8781}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &456033137
 CanvasRenderer:
@@ -4435,8 +4435,8 @@ MonoBehaviour:
   m_CaretWidth: 1
   m_ReadOnly: 0
   m_RichText: 1
-  m_GlobalFontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_OnFocusSelectAll: 1
+  m_GlobalFontAsset: {fileID: 11400000, guid: 8150b19d8e7b24654bc400ad9d9586f4, type: 2}
+  m_OnFocusSelectAll: 0
   m_ResetOnDeActivation: 1
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 0
@@ -5248,8 +5248,8 @@ MonoBehaviour:
   m_CaretWidth: 1
   m_ReadOnly: 0
   m_RichText: 1
-  m_GlobalFontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_OnFocusSelectAll: 1
+  m_GlobalFontAsset: {fileID: 11400000, guid: 8150b19d8e7b24654bc400ad9d9586f4, type: 2}
+  m_OnFocusSelectAll: 0
   m_ResetOnDeActivation: 1
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 0
@@ -6430,8 +6430,8 @@ MonoBehaviour:
   m_CaretWidth: 1
   m_ReadOnly: 0
   m_RichText: 1
-  m_GlobalFontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_OnFocusSelectAll: 1
+  m_GlobalFontAsset: {fileID: 11400000, guid: 8150b19d8e7b24654bc400ad9d9586f4, type: 2}
+  m_OnFocusSelectAll: 0
   m_ResetOnDeActivation: 1
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 0
@@ -7203,7 +7203,7 @@ Material:
     - _Intensity: 0
     - _Metallic: 0
     - _Mode: 0
-    - _Multiplier: 0.347
+    - _Multiplier: 0.225
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
@@ -8235,8 +8235,8 @@ MonoBehaviour:
   m_CaretWidth: 1
   m_ReadOnly: 0
   m_RichText: 1
-  m_GlobalFontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_OnFocusSelectAll: 1
+  m_GlobalFontAsset: {fileID: 11400000, guid: 8150b19d8e7b24654bc400ad9d9586f4, type: 2}
+  m_OnFocusSelectAll: 0
   m_ResetOnDeActivation: 1
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 0
@@ -9893,8 +9893,8 @@ MonoBehaviour:
   m_CaretWidth: 1
   m_ReadOnly: 0
   m_RichText: 1
-  m_GlobalFontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_OnFocusSelectAll: 1
+  m_GlobalFontAsset: {fileID: 11400000, guid: 8150b19d8e7b24654bc400ad9d9586f4, type: 2}
+  m_OnFocusSelectAll: 0
   m_ResetOnDeActivation: 1
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 0

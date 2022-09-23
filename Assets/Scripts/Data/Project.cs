@@ -7,8 +7,8 @@ namespace Sever.Gridder.Data
     {
         public string Guid { get; }
         public string Name => Settings.name;
-        public float CanvasWidth => Settings.canvasWidth;
-        public float CanvasHeight => Settings.canvasHeight;
+        public int CanvasWidth => Settings.canvasWidth;
+        public int CanvasHeight => Settings.canvasHeight;
         public int GridStep => Settings.gridStep;
 
         public float PixelsPerMm { get; set; }
