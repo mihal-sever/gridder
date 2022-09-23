@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Sever.Gridder.Data;
@@ -38,11 +37,12 @@ namespace Sever.Gridder.Editor
 
         public void SetProject(Project project)
         {
+            if (project != null && project == _project)
+            {
+                return;
+            }  
+            
             _project = project;
-        }
-
-        private void OnEnable()
-        {
             StartCoroutine(Setup());
         }
 

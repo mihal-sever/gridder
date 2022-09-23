@@ -21,7 +21,6 @@ namespace Sever.Gridder.UI
             foreach (var screen in _screens)
             {
                 screen.Setup(_screenAnimationDuration, ScreenPosition.Right, ScreenPosition.Left);
-                screen.gameObject.SetActive(false);
             }
         }
 

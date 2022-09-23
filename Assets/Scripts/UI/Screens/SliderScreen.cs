@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,7 +22,10 @@ namespace Sever.Gridder.UI
         private bool _enterCompleted;
 
         private RectTransform _rectTransform;
-        private RectTransform RectTransform => _rectTransform ??= GetComponentInChildren<RectTransform>(true);
+        private RectTransform RectTransform => _rectTransform ??= GetComponent<RectTransform>();
+
+        private Canvas _canvas;
+        private Canvas Canvas => _canvas ??= GetComponent<Canvas>();
         
         private Vector2 _offset;
         private Vector2 Offset
@@ -50,14 +54,14 @@ namespace Sever.Gridder.UI
             _toPosition = GetPosition(to);
 
             RectTransform.Move(RectTransform.anchoredPosition, _fromPosition);
-            gameObject.SetActive(false);
+            SetActive(false);
         }
 
         public void Open(Action callback = null)
         {
             float duration = _fromPosition == Vector2.zero ? 0 : _transitionDuration;
             _enterCompleted = false;
-            gameObject.SetActive(true);
+            SetActive(true);
             RectTransform.Move(RectTransform.anchoredPosition, Vector2.zero, duration, LeanTweenType.notUsed,
                 () =>
                 {
@@ -73,10 +77,26 @@ namespace Sever.Gridder.UI
                 () =>
                 {
                     RectTransform.Move(RectTransform.anchoredPosition, _fromPosition);
-                    gameObject.SetActive(false);
+                    SetActive(false);
                     callback?.Invoke();
                 },
                 _enterCompleted ? 0 : _transitionDuration);
+        }
+
+        private void SetActive(bool isActive)
+        {
+            if (Canvas)
+            {
+                if (!gameObject.activeSelf)
+                {
+                    gameObject.SetActive(true);
+                }
+                
+                Canvas.enabled = isActive;
+                return;
+            }
+            
+            gameObject.SetActive(isActive);
         }
 
         private Vector2 GetPosition(ScreenPosition position)
