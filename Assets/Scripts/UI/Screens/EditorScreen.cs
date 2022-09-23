@@ -26,6 +26,7 @@ namespace Sever.Gridder.UI
 
         public void Init()
         {
+            EditorHotkeyManager.Instance.enabled = false;
             _knobController.Init(_cleanKnobsButton);
             _savedConfirmation.gameObject.SetActive(false);
             _settingsPanel.Close();
@@ -37,16 +38,6 @@ namespace Sever.Gridder.UI
 
             EventBus.ProjectOpened += OpenProject;
             EventBus.ProjectDeleted += Clear;
-        }
-
-        private void OnEnable()
-        {
-            EditorHotkeyManager.Instance.enabled = true;
-        }
-
-        private void OnDisable()
-        {
-            EditorHotkeyManager.Instance.enabled = false;
         }
 
         private void OnApplicationQuit()
@@ -62,6 +53,8 @@ namespace Sever.Gridder.UI
 
         private void OpenProject(Project project)
         {
+            EditorHotkeyManager.Instance.enabled = true;
+            
             if (_project == project)
             {
                 return;
@@ -95,6 +88,7 @@ namespace Sever.Gridder.UI
 
         private void CloseProject()
         {
+            EditorHotkeyManager.Instance.enabled = false;
             Save();
             _settingsPanel.Close();
             EventBus.OnProjectClosed(_project);

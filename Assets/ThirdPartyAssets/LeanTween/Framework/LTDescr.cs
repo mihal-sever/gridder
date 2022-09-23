@@ -1020,10 +1020,6 @@ public class LTDescr
 	public void callOnCompletes(){
 		if(this.type==TweenAction.GUI_ROTATE)
 			this._optional.ltRect.rotateFinished = true;
-
-		if(this.type==TweenAction.DELAYED_SOUND){
-			AudioSource.PlayClipAtPoint((AudioClip)this._optional.onCompleteParam, this.to, this.from.x);
-		}
 		if(this._optional.onComplete!=null){
 			this._optional.onComplete();
 		}else if(this._optional.onCompleteObject!=null){

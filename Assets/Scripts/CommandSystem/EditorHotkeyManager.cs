@@ -44,7 +44,7 @@ namespace Sever.Gridder.Editor
                 {
                     return;
                 }
-
+                
                 IsFired = true;
                 _onHotkeyPress.Invoke();
             }
@@ -93,9 +93,7 @@ namespace Sever.Gridder.Editor
             {
                 Debug.LogError("there's more than one HotkeyManager present");
             }
-            
-            enabled = false;
-            
+
             // Hotkey for change tool
             AddHotkeyBind(new List<KeyCode> {KeyCode.LeftControl, KeyCode.Z}, CommandsManager.Undo);
             AddHotkeyBind(new List<KeyCode> {KeyCode.LeftCommand, KeyCode.Z}, CommandsManager.Undo);

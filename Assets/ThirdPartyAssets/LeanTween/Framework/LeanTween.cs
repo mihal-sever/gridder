@@ -1942,17 +1942,7 @@ public class LeanTween : MonoBehaviour {
         return pushNewTween( gameObject, new Vector3(to,0,0), time, options().setCallback().setTo( new Vector3(to,0,0) ).setFrom( new Vector3(from,0,0) ).setOnUpdate(callOnUpdate, gameObject) );
     }
 
-    public static LTDescr delayedSound( AudioClip audio, Vector3 pos, float volume ){
-        //Debug.LogError("Delay sound??");
-        return pushNewTween( tweenEmpty, pos, 0f, options().setDelayedSound().setTo( pos ).setFrom( new Vector3(volume,0,0) ).setAudio( audio ) );
-    }
-
-    public static LTDescr delayedSound( GameObject gameObject, AudioClip audio, Vector3 pos, float volume ){
-        //Debug.LogError("Delay sound??");
-        return pushNewTween( gameObject, pos, 0f, options().setDelayedSound().setTo( pos ).setFrom( new Vector3(volume,0,0) ).setAudio( audio ) );
-    }
-
-    #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
+#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 
     /**
     * <summary>Move a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
