@@ -6,7 +6,7 @@ namespace Sever.Gridder.UI
     public abstract class BaseScreen : MonoBehaviour
     {
         private SliderScreen _sliderScreen;
-        private SliderScreen SliderScreen => _sliderScreen ??= GetComponentInChildren<SliderScreen>(true);
+        private SliderScreen SliderScreen => _sliderScreen ??= GetComponent<SliderScreen>();
 
 
         public void Setup(float animationDuration, ScreenPosition from, ScreenPosition to)
