@@ -89,10 +89,6 @@ namespace Sever.Gridder.UI
         private void OnProjectClosed(Project project)
         {
             _paginationController.SetAsFirstItem(_projectButtons[project].RectTransform);
-            // _projectButtons.Remove(project);
-            // _paginationController.DeleteItem(_projectButtons[project].RectTransform);
-            //
-            // AddProject(project, true);
         }
     }
 }

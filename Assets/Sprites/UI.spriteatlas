@@ -1,0 +1,107 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: UI
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 21300000, guid: 35727a04158d8479b9361dc6e2fd47ab, type: 3}
+    - {fileID: 21300000, guid: 4bcbe8ae6d0dd40f585e4cae8ab63813, type: 3}
+    - {fileID: 21300000, guid: 9c4b6417cd1f749ff85f5eba71674a39, type: 3}
+    - {fileID: 21300000, guid: 2dcfd53ed6617488984c32cd690728c5, type: 3}
+    - {fileID: 21300000, guid: cd952dd2e54e749af8d5789024dfbec7, type: 3}
+    - {fileID: 21300000, guid: 1d619d56ce9324e44a5c24672e11ae67, type: 3}
+    - {fileID: 21300000, guid: ab5f1016d465d4323a56754bcb6f29c2, type: 3}
+    - {fileID: 21300000, guid: 0da13e74b045749198a21b185c3041e3, type: 3}
+    - {fileID: 21300000, guid: 0a63088cc323c42b4924de975b0f5494, type: 3}
+    - {fileID: 21300000, guid: 93c610226963441aa9573833baac30fb, type: 3}
+    - {fileID: 21300000, guid: 0a63088cc323c42b4924de975b0f5494, type: 3}
+    - {fileID: 21300000, guid: f2f0cb259573648c1a6d0ec360a854c1, type: 3}
+    - {fileID: 21300000, guid: 3e3688b291fa94c4a8f15c2f88360fbf, type: 3}
+    - {fileID: 21300000, guid: b42ddd053da6247c1bca4d3339bb6795, type: 3}
+    - {fileID: 21300000, guid: 19e24b505d68c41cb83b83555b31f310, type: 3}
+    - {fileID: 21300000, guid: 05923db25106e4b9a8d713e1ed228c5f, type: 3}
+    - {fileID: 21300000, guid: 6c2c1e32996de46758d324fc861a4f17, type: 3}
+    - {fileID: 21300000, guid: e63a85211d3954ff385c1ff2d74ea78a, type: 3}
+    - {fileID: 2800000, guid: c943f08211a5a4de59ae4b927b7d20c0, type: 3}
+    - {fileID: 21300000, guid: e31f08437b2a94f8da6abfc59d87f48e, type: 3}
+    - {fileID: 21300000, guid: 481c4f14e9f14428d996edb14e79b982, type: 3}
+    - {fileID: 21300000, guid: ad6d69b43f67e4ec8af19ae0fed8d33c, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 19e24b505d68c41cb83b83555b31f310, type: 3}
+  - {fileID: 21300000, guid: e63a85211d3954ff385c1ff2d74ea78a, type: 3}
+  - {fileID: 21300000, guid: 93c610226963441aa9573833baac30fb, type: 3}
+  - {fileID: 21300000, guid: 6c2c1e32996de46758d324fc861a4f17, type: 3}
+  - {fileID: 21300000, guid: c943f08211a5a4de59ae4b927b7d20c0, type: 3}
+  - {fileID: 21300000, guid: 3e3688b291fa94c4a8f15c2f88360fbf, type: 3}
+  - {fileID: 21300000, guid: 05923db25106e4b9a8d713e1ed228c5f, type: 3}
+  - {fileID: 21300000, guid: cd952dd2e54e749af8d5789024dfbec7, type: 3}
+  - {fileID: 21300000, guid: e31f08437b2a94f8da6abfc59d87f48e, type: 3}
+  - {fileID: 21300000, guid: 35727a04158d8479b9361dc6e2fd47ab, type: 3}
+  - {fileID: 21300000, guid: 481c4f14e9f14428d996edb14e79b982, type: 3}
+  - {fileID: 21300000, guid: 0da13e74b045749198a21b185c3041e3, type: 3}
+  - {fileID: 21300000, guid: ad6d69b43f67e4ec8af19ae0fed8d33c, type: 3}
+  - {fileID: 21300000, guid: b42ddd053da6247c1bca4d3339bb6795, type: 3}
+  - {fileID: 21300000, guid: f2f0cb259573648c1a6d0ec360a854c1, type: 3}
+  - {fileID: 21300000, guid: ab5f1016d465d4323a56754bcb6f29c2, type: 3}
+  - {fileID: 21300000, guid: 1d619d56ce9324e44a5c24672e11ae67, type: 3}
+  - {fileID: 21300000, guid: 9c4b6417cd1f749ff85f5eba71674a39, type: 3}
+  - {fileID: 21300000, guid: 0a63088cc323c42b4924de975b0f5494, type: 3}
+  - {fileID: 21300000, guid: 2dcfd53ed6617488984c32cd690728c5, type: 3}
+  - {fileID: 21300000, guid: 4bcbe8ae6d0dd40f585e4cae8ab63813, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - ok
+  - progress
+  - clean-knobs
+  - hover-indicator
+  - gradient
+  - image
+  - card-add
+  - knob-yellow
+  - main-shape
+  - knob-blue
+  - main-shape-half
+  - menu
+  - border
+  - plus
+  - forward
+  - settings
+  - save
+  - knob-pink
+  - back
+  - knob-red
+  - knob-green
+  m_RenderDataMap: {}
+  m_Tag: UI
+  m_IsVariant: 0
